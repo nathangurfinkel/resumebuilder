@@ -8,7 +8,7 @@ const AuthContext = React.createContext({
     token: null,
     handleLogin: (token, userId, expiresAt) => {},
     handleLogout: () => {},
-    isLoggedIn: true,
+    isLoggedIn: false,
     userId: null,
 })
 
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
         localStorage.getItem('expiresAt')
     )
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
-    const [isLoggedIn, setIsLoggedIn] = useState(true)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const handleLogin = (token, userId, expiresAt) => {
         localStorage.setItem('token', token)
@@ -54,6 +54,8 @@ const AuthProvider = ({ children }) => {
             if (new Date(parseInt(expiresAt)) > new Date()) {
                 setIsLoggedIn(true)
             }
+        } else {
+            setIsLoggedIn(false)
         }
     }, [])
     const value = {
