@@ -135,7 +135,7 @@ const ResumePreview = ({
                             </Link>
                         </Stack>
                         <Box mb={4}>{summary}</Box>
-                        <Heading as="h3" mb={4}>
+                        <Heading as="h6" mb={4}>
                             Skills
                         </Heading>
                         <List styleType="disc">

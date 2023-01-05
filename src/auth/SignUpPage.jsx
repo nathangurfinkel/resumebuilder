@@ -37,8 +37,7 @@ const SignUpPage = () => {
     const { loading, run, data, error } = useRequest(postSignUp, {
         manual: true,
         onSuccess: (result, params) => {
-            console.log('onSuccess')
-            console.log(result)
+            
             toast({
                 title: 'Account created.',
                 description: "I've created the account for you.",
@@ -49,8 +48,7 @@ const SignUpPage = () => {
             navigate('/login')
         },
         onError: (error, params) => {
-            console.log('onError')
-            console.log(error)
+        
             toast({
                 title: 'Error',
                 description: error.response.data

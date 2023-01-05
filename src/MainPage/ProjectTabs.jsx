@@ -24,7 +24,6 @@ const ProjectTabs = ({
 }) => {
     const [triggered, setTriggered] = React.useState(false)
     const handleTabsChange = (index) => {
-        console.log('index: ', index)
         setPosition(index)
         setTriggered(true)
         setTimer(10000)

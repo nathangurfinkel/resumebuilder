@@ -51,7 +51,17 @@ export const ResumeInput = ({ resume, setResume }) => {
     //     phone: '',
     //     template: 1,
     // }
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const {
+        isOpen: workIsOpen,
+        onOpen: workOnOpen,
+        onClose: workOnClose,
+    } = useDisclosure()
+
+    const {
+        isOpen: eduIsOpen,
+        onOpen: eduOnOpen,
+        onClose: eduOnClose,
+    } = useDisclosure()
     const toast = useToast()
     return (
         <Flex
@@ -157,14 +167,14 @@ export const ResumeInput = ({ resume, setResume }) => {
                 <Button
                     colorScheme="teal"
                     variant="outline"
-                    onClick={onOpen}
+                    onClick={workOnOpen}
                     m={0.5}
                     w="100%"
                 >
                     <AddIcon mr={1} />
                     Add Work Experience
                 </Button>
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal isOpen={workIsOpen} onClose={workOnClose}>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>Add Work Experience</ModalHeader>
@@ -239,12 +249,12 @@ export const ResumeInput = ({ resume, setResume }) => {
                                             },
                                         ],
                                     })
-                                    onClose()
+                                    workOnClose()
                                 }}
                             >
                                 Save
                             </Button>
-                            <Button variant="ghost" onClick={onClose}>
+                            <Button variant="ghost" onClick={workOnClose}>
                                 Cancel
                             </Button>
                         </ModalFooter>
@@ -254,7 +264,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                 {/* work experience list  */}
                 {/* edit work experience modal */}
             </FormControl>
-            //
             {/* same for education */}
             <FormControl>
                 <FormLabel htmlFor="education">Education</FormLabel>
@@ -291,14 +300,14 @@ export const ResumeInput = ({ resume, setResume }) => {
                 <Button
                     colorScheme="teal"
                     variant="outline"
-                    onClick={onOpen}
+                    onClick={eduOnOpen}
                     m={0.5}
                     w="100%"
                 >
                     <AddIcon mr={1} />
                     Add Education
                 </Button>
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal isOpen={eduIsOpen} onClose={eduOnClose}>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>Add Education</ModalHeader>
@@ -372,12 +381,12 @@ export const ResumeInput = ({ resume, setResume }) => {
                                             },
                                         ],
                                     })
-                                    onClose()
+                                    eduOnClose()
                                 }}
                             >
                                 Save
                             </Button>
-                            <Button variant="ghost" onClick={onClose}>
+                            <Button variant="ghost" onClick={eduOnClose}>
                                 Cancel
                             </Button>
                         </ModalFooter>
@@ -422,7 +431,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                                 document.getElementById(
                                     'activitiesInput'
                                 )?.value
-                            console.log(resume)
 
                             if (newActivity === '') {
                                 toast({

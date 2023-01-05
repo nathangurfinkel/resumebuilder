@@ -1,5 +1,5 @@
 import { useColorModeValue } from '@chakra-ui/color-mode'
-import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
+import { ArrowDownIcon, ArrowUpIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { useBreakpointValue } from '@chakra-ui/media-query'
 import {
     Button,
@@ -13,7 +13,6 @@ import {
     Spinner,
     Stack,
     Text,
-    Tooltip,
 } from '@chakra-ui/react'
 import React from 'react'
 import { FileUploader } from 'react-drag-drop-files'
@@ -22,6 +21,7 @@ import RadioIconGroup from './RadioIconGroup'
 import { useToast } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { handleDownload } from '../../helpers/handleDownload'
+import { CircularProgress } from '@chakra-ui/react'
 const ToolBar = ({
     localMode,
     setLocalMode,
@@ -33,6 +33,9 @@ const ToolBar = ({
     resumeListError,
     setResume,
     setNewResumeMode,
+    updateResumeLoading,
+    updateResumeError,
+    updateResume,
 }) => {
     const toast = useToast()
     const uploadText = useBreakpointValue(
@@ -46,36 +49,33 @@ const ToolBar = ({
     const [fileUploadOpen, setFileUploadOpen] = React.useState(false)
     const [file, setFile] = useState(null)
     const handleFile = (file) => {
-        console.log(file)
-        setFile(file)
-    }
-    console.log('resume', resume)
-    useEffect(() => {
-        console.log('file useEffect in ResumeBuilder')
-        if (file) {
-            console.log('file', file)
-
-            try {
-                const resumeData = JSON.parse(file)
-                //check if the file is a valid resume file by checking if it has at least one property of the resume object
-                if (!resumeData.identifier) {
-                    throw new Error('Invalid file')
-                }
-
+        try {
+            // read the file data - its a .json file
+            const fileReader = new FileReader()
+            fileReader.readAsText(file, 'UTF-8')
+            fileReader.onload = (e) => {
+                const resumeData = JSON.parse(e.target.result)
                 setResume(resumeData)
                 setNewResumeMode(false)
-            } catch (error) {
+                console.log('resumeData', resumeData)
                 toast({
-                    title: 'Invalid file',
-                    description:
-                        'The file you selected is not a valid resume file',
-                    status: 'error',
+                    title: 'Resume ' + resumeData?.identifier + ' uploaded',
+                    description: 'Your resume has been uploaded',
+                    status: 'success',
                     duration: 9000,
                     isClosable: true,
                 })
             }
+        } catch (error) {
+            toast({
+                title: 'Invalid file',
+                description: 'The file you selected is not a valid resume file',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
         }
-    }, [file])
+    }
 
     return (
         <Stack
@@ -103,25 +103,16 @@ const ToolBar = ({
                         <ArrowUpIcon />
                         <Text fontSize={'sm'}>{uploadText}</Text>
                     </Button>
-                    <Tooltip
-                        label={
-                            resume.identifier === ''
-                                ? 'Resume must include identifier'
-                                : 'Download resume'
-                        }
-                        bg={resume.identifier === '' ? 'red' : 'green'}
-                        display={resume.identifier === '' ? 'block' : 'none'}
+
+                    <Button
+                        onClick={() => handleDownload(resume)}
+                        size="sm"
+                        variant={'ghost'}
+                        isDisabled={!resume}
                     >
-                        <Button
-                            onClick={() => handleDownload(resume)}
-                            size="sm"
-                            variant={'ghost'}
-                            isDisabled={resume.identifier === ''}
-                        >
-                            <ArrowDownIcon mr={2} />
-                            <Text fontSize={'sm'}>{downloadText}</Text>
-                        </Button>
-                    </Tooltip>
+                        <ArrowDownIcon mr={2} />
+                        <Text fontSize={'sm'}>{downloadText}</Text>
+                    </Button>
                 </>
             )}
             {!localMode && !isLoggedIn && (
@@ -171,8 +162,19 @@ const ToolBar = ({
                         setResume={setResume}
                         resume={resume}
                         setNewResumeMode={setNewResumeMode}
+                        updateResumeLoading={updateResumeLoading}
                     />
                 </>
+            )}
+
+            {/* draw sync icon inside circular progress and if udpdateResume show check icon */}
+
+            {updateResumeLoading ? (
+                <Spinner color="teal.500" size="md" thickness="4px" />
+            ) : (
+                updateResume && (
+                    <CheckCircleIcon color="green.500" fontSize="xl" />
+                )
             )}
         </Stack>
     )

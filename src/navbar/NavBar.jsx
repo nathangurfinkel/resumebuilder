@@ -55,16 +55,18 @@ const NavBar = () => {
 
     return (
         <Box>
-            <Flex
+            <Stack
+                as={'nav'}
+                spacing={4}
+                align={'center'}
+                justify={'space-between'}
+                direction={{ base: 'column', md: 'row' }}
+                py={4}
+                px={8}
                 bg={useColorModeValue('white', 'gray.800')}
-                color={useColorModeValue('gray.600', 'white')}
-                minH={'60px'}
-                py={{ base: 2 }}
-                px={{ base: 4 }}
                 borderBottom={1}
                 borderStyle={'solid'}
                 borderColor={useColorModeValue('gray.200', 'gray.900')}
-                align={'center'}
             >
                 <Flex
                     flex={{ base: 1 }}
@@ -152,6 +154,7 @@ const NavBar = () => {
                         as={Button}
                         variant={'ghost'}
                         // rightIcon={<Icon as={SettingsIcon} />}
+                        display={{ base: 'flex', md: 'none' }}
                     >
                         Free Tools
                     </MenuButton>
@@ -172,24 +175,19 @@ const NavBar = () => {
                         </MenuItem>
                     </MenuList>
                 </Menu>
-                <Flex alignItems={'center'}>
-                    <IconButton
-                        size={'md'}
-                        fontSize={'lg'}
-                        variant={'ghost'}
-                        color={useColorModeValue('gray.600', 'gray.200')}
-                        marginLeft={'2'}
-                        onClick={handleColorMode}
-                        icon={
-                            isDark ? (
-                                <Icon as={SunIcon} />
-                            ) : (
-                                <Icon as={MoonIcon} />
-                            )
-                        }
-                        aria-label={'Color Mode'}
-                    />
-                </Flex>
+
+                <IconButton
+                    size={'md'}
+                    fontSize={'lg'}
+                    variant={'ghost'}
+                    color={useColorModeValue('gray.600', 'gray.200')}
+                    marginLeft={'2'}
+                    onClick={handleColorMode}
+                    icon={
+                        isDark ? <Icon as={SunIcon} /> : <Icon as={MoonIcon} />
+                    }
+                    aria-label={'Color Mode'}
+                />
 
                 {/* mobile nav */}
 
@@ -228,7 +226,7 @@ const NavBar = () => {
                         </Button>
                     )}
                 </Flex>
-            </Flex>
+            </Stack>
         </Box>
     )
 }

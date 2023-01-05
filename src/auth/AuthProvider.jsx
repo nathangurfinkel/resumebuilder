@@ -44,8 +44,6 @@ const AuthProvider = ({ children }) => {
     if (token && expiresAt) {
         if (new Date(expiresAt) < new Date()) {
             // handleLogout();
-            console.log('expired')
-            console.log(new Date(expiresAt))
         }
     }
     useEffect(() => {

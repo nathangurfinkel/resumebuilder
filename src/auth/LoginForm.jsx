@@ -40,8 +40,7 @@ export default function LoginForm({ modal, onClose }) {
     const { loading, run, data, error } = useRequest(postSignIn, {
         manual: true,
         onSuccess: (result, params) => {
-            console.log('onSuccess')
-            console.log(result)
+       
 
             handleLogin(
                 result.data.token,
@@ -62,8 +61,7 @@ export default function LoginForm({ modal, onClose }) {
             })
         },
         onError: (error, params) => {
-            console.log('onError')
-            console.log(error)
+         
             toast({
                 title: 'Error',
                 description: JSON.stringify(error.response.statusText),

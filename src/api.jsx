@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api';
-const apiHost = 'http://localhost:3001/api';
+const apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api';
+// const apiHost = 'http://localhost:3001/api';
 
 
 
@@ -17,7 +17,6 @@ export function getResumeList() {
         }
 
     };
-    console.log(config);
     return axios(config);
 }
 
