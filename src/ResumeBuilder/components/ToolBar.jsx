@@ -1,5 +1,10 @@
 import { useColorModeValue } from '@chakra-ui/color-mode'
-import { ArrowDownIcon, ArrowUpIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import {
+    AddIcon,
+    ArrowDownIcon,
+    ArrowUpIcon,
+    CheckCircleIcon,
+} from '@chakra-ui/icons'
 import { useBreakpointValue } from '@chakra-ui/media-query'
 import {
     Button,
@@ -15,18 +20,30 @@ import {
     Spacer,
     Spinner,
     Stack,
+    IconButton,
     Text,
     Box,
+    HStack,
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogOverlay,
+    useDisclosure,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogCloseButton,
+    useToast,
 } from '@chakra-ui/react'
 import React from 'react'
 import { FileUploader } from 'react-drag-drop-files'
-import ResumeMenu from '../ResumeMenu'
+import ResumeMenu from './ResumeMenu'
 import RadioIconGroup from './RadioIconGroup'
-import { useToast } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { handleDownload } from '../../helpers/handleDownload'
 import { CircularProgress } from '@chakra-ui/react'
 import PacmanLoader from 'react-spinners/PacmanLoader'
+import { useRequest } from 'ahooks'
+import { deleteResumeById } from '../../api'
 const ToolBar = ({
     localMode,
     setLocalMode,
@@ -42,6 +59,8 @@ const ToolBar = ({
     updateResumeError,
     updateResume,
     onUpdate,
+    newResumeMode,
+    resumeListRefresh,
 }) => {
     const toast = useToast()
     const uploadText = useBreakpointValue(
@@ -83,6 +102,39 @@ const ToolBar = ({
         }
     }
 
+    const {
+        data: deleteResumeData,
+        loading: deleteResumeLoading,
+        run: deleteResume,
+    } = useRequest(deleteResumeById, {
+        manual: true,
+        onSuccess: (result, params) => {
+            console.log('result', result)
+            console.log('params', params)
+
+            toast({
+                title: 'Resume deleted',
+                description: 'Your resume has been deleted',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            setResume(null)
+            resumeListRefresh()
+        },
+        onError: (error, params) => {
+            console.log('error', error)
+            console.log('params', params)
+            toast({
+                title: 'Error deleting resume',
+                description: 'There was an error deleting your resume',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+        },
+    })
+
     return (
         <>
             <FileUploadModal
@@ -107,7 +159,7 @@ const ToolBar = ({
                 bg={useColorModeValue('teal.50', 'teal.900')}
                 minH={'80px'}
             >
-                <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                <HStack alignItems={'center'} spacing={2}>
                     {resumeListLoading ? (
                         <Center minW={'300px'}>
                             <PacmanLoader
@@ -131,11 +183,22 @@ const ToolBar = ({
                     )}
                     {resume && (
                         //delete resume button
-                        <Button size="md" variant={'ghost'} colorScheme="red">
-                            <Text fontSize={'sm'}>Delete</Text>
-                        </Button>
+                        <DeleteResume
+                            resume={resume}
+                            setResume={setResume}
+                            setNewResumeMode={setNewResumeMode}
+                            deleteResume={deleteResume}
+                        />
                     )}
-                </Stack>
+                    {!newResumeMode && (
+                        <CreateResumeButton
+                            resume={resume}
+                            setResume={setResume}
+                            setNewResumeMode={setNewResumeMode}
+                        />
+                    )}
+                </HStack>
+
                 {/* draw sync icon inside circular progress and if udpdateResume show check icon */}
                 {updateResumeLoading ? (
                     <Spinner color="teal.500" size="md" thickness="4px" />
@@ -171,6 +234,7 @@ const ToolBar = ({
 }
 
 export default ToolBar
+
 function FileUploadModal({
     fileUploadOpen,
     setFileUploadOpen,
@@ -204,5 +268,73 @@ function FileUploadModal({
                 </ModalFooter>
             </ModalContent>
         </Modal>
+    )
+}
+
+// CreateResume icon button that sets newResumeMode to true
+// and sets resume to null
+
+function CreateResumeButton({ setNewResumeMode, setResume }) {
+    return (
+        <Button
+            aria-label="Create Resume"
+            leftIcon={<AddIcon />}
+            onClick={() => {
+                setNewResumeMode(true)
+                setResume(null)
+            }}
+        >
+            New Resume
+        </Button>
+    )
+}
+function DeleteResume({ resume, deleteResume, setResume, setNewResumeMode }) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const handleDelete = () => {
+        deleteResume(resume._id)
+        onClose()
+    }
+    const cancelRef = React.useRef()
+
+    return (
+        <>
+            <Button
+                size="md"
+                variant={'ghost'}
+                colorScheme="red"
+                onClick={onOpen}
+            >
+                <Text fontSize={'sm'}>Delete</Text>
+            </Button>
+
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete Resume
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure? You can't undo this action afterwards.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <AlertDialogCloseButton />
+                            <Button
+                                colorScheme="red"
+                                onClick={handleDelete}
+                                ml={3}
+                            >
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        </>
     )
 }

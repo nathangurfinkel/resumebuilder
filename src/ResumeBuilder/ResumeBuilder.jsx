@@ -36,33 +36,34 @@ const ResumeBuilder = () => {
     const toast = useToast()
     const navigate = useNavigate()
     const [resume, setResume] = useState(null)
+
     const {
         data: resumeList,
         loading: resumeListLoading,
         error: resumeListError,
         run: resumeListRun,
+        refresh: resumeListRefresh,
     } = useRequest(getResumeList, {
         manual: true,
-        onSuccess: (result, params) => {
-            toast({
-                title: 'Resume list loaded',
-                description: 'Your resume list has been loaded',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-            })
-        },
-        onError: (error, params) => {
-            toast({
-                title: 'Resume list not loaded',
-                description: 'Your resume list has not been loaded',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            })
-        },
+        // onSuccess: (result, params) => {
+        //     toast({
+        //         title: 'Resume list loaded',
+        //         description: 'Your resume list has been loaded',
+        //         status: 'success',
+        //         duration: 9000,
+        //         isClosable: true,
+        //     })
+        // },
+        // onError: (error, params) => {
+        //     toast({
+        //         title: 'Resume list not loaded',
+        //         description: 'Your resume list has not been loaded',
+        //         status: 'error',
+        //         duration: 9000,
+        //         isClosable: true,
+        //     })
+        // },
     })
-
     const {
         data: newResume,
         loading: newResumeLoading,
@@ -71,6 +72,7 @@ const ResumeBuilder = () => {
     } = useRequest(postNewResume, {
         manual: true,
         onSuccess: (result, params) => {
+            console.log('params', params)
             toast({
                 title: 'Resume created',
                 description: 'Your resume has been created',
@@ -78,6 +80,8 @@ const ResumeBuilder = () => {
                 duration: 9000,
                 isClosable: true,
             })
+            resumeListRefresh()
+            initializeResume(params[0].identifier)
         },
         onError: (error, params) => {
             toast({
@@ -87,30 +91,44 @@ const ResumeBuilder = () => {
                 duration: 9000,
                 isClosable: true,
             })
+            resumeListRefresh()
         },
     })
-
     const {
         data: updateResume,
         loading: updateResumeLoading,
         error: updateResumeError,
         run: updateResumeRun,
     } = useRequest(updateResumeById, {
-        manual: true,
-        throttleWait: 3000,
+        throttleWait: 5000,
+
+        ready: resume && resume.identifier,
+        refreshDeps: [resume],
+        defaultParams: [resume],
+        debounceInterval: 5000,
+
+        onError: (error, params) => {
+            console.log('error', error)
+            console.log('params', params)
+        },
+        onSuccess: (result, params) => {
+            console.log('params', params)
+
+            resumeListRefresh()
+        },
     })
 
     React.useEffect(() => {
-        if (!localMode && isLoggedIn) {
+        if (isLoggedIn) {
             resumeListRun()
         }
-    }, [localMode, isLoggedIn])
+    }, [isLoggedIn])
 
     const onUpdate = () => {
         updateResumeRun(resume)
     }
 
-    const onCreateNewResume = (identifier, isLocal) => {
+    const initializeResume = (identifier) => {
         setResume({
             identifier: identifier,
             name: '',
@@ -124,9 +142,6 @@ const ResumeBuilder = () => {
             phone: '',
             template: 1,
         })
-        if (!isLocal) {
-            newResumeRun(resume)
-        }
     }
 
     // local storage mode for resume builder
@@ -155,9 +170,11 @@ const ResumeBuilder = () => {
 
     // }
 
-    useEffect(() => {
-        onUpdate()
-    }, [resume])
+    // useEffect(() => {
+    //     if (resume && resume.identifier) {
+    //         onUpdate()
+    //     }
+    // }, [resume])
 
     const cardWidth = useBreakpointValue({ base: '100%', md: '50%' })
 
@@ -193,12 +210,12 @@ const ResumeBuilder = () => {
                     setNewResumeMode={setNewResumeMode}
                     updateResume={updateResume}
                     onUpdate={onUpdate}
+                    newResumeMode={newResumeMode}
+                    resumeListRefresh={resumeListRefresh}
                 />
             )}
             {/* new resume box */}
-            {!resume && isLoggedIn && (
-                <NewResume onCreateNewResume={onCreateNewResume} />
-            )}
+            {!resume && isLoggedIn && <NewResume newResumeRun={newResumeRun} />}
 
             {!isLoggedIn && (
                 <Box m={4}>
@@ -219,8 +236,6 @@ const ResumeBuilder = () => {
                     border={'1px'}
                     borderColor={'gray.200'}
                 >
-                   
-
                     <ResumeInput resume={resume} setResume={setResume} />
                 </Box>
             )}

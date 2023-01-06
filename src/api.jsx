@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 var apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api'
-// apiHost = 'http://localhost:8080/api'
+apiHost = 'http://localhost:8080/api'
 
 export function getResumeList() {
     const userId = localStorage.getItem('userId')
@@ -28,6 +28,10 @@ export function getResumeById(id) {
 }
 
 export function postNewResume(data) {
+    //add user id to data
+    console.log('postNewResume', data)
+    data.user_id = localStorage.getItem('userId')
+
     let config = {
         method: 'post',
         url: `${apiHost}/resumes/add`,
