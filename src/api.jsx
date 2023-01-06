@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 var apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api'
-apiHost = 'http://localhost:3001/api'
+// apiHost = 'http://localhost:3001/api'
 
 export function getResumeList() {
     let config = {
