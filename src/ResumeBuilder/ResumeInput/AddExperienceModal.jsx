@@ -16,7 +16,9 @@ import {
 } from '@chakra-ui/react'
 
 function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
+    console.log('resume', resume)
     const onSubmit = (e) => {
+        console.log('onSubmit')
         e.preventDefault()
         const company = e.target.company.value
         const position = e.target.position.value
@@ -30,10 +32,19 @@ function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
             endDate,
             description,
         }
-        setResume({
-            ...resume,
-            experience: [...resume.experience, newExperience],
-        })
+        // check if experience is empty
+
+        if (!resume.experience) {
+            //create array with newExperience
+            const newExperienceArray = [newExperience]
+
+            setResume({ ...resume, experience: newExperienceArray })
+        } else {
+            setResume({
+                ...resume,
+                experience: [...resume.experience, newExperience],
+            })
+        }
         workOnClose()
     }
 

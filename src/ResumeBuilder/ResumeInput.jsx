@@ -27,11 +27,16 @@ import {
     useColorMode,
     useColorModeValue,
     Spacer,
+    StackDivider,
+    VStack,
+    HStack,
 } from '@chakra-ui/react'
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
-import EditExperienceModal from './components/EditExperienceModal'
-import AddExperienceModal from './components/AddExperienceModal'
+import EditExperienceModal from './ResumeInput/EditExperienceModal'
+import AddExperienceModal from './ResumeInput/AddExperienceModal'
 import { DragDropContext, Draggable } from 'react-beautiful-dnd'
+import PersonalSection from './ResumeInput/PersonalSection'
+import ProfessionalSection from './ResumeInput/ProfessionalSection'
 
 export const ResumeInput = ({ resume, setResume }) => {
     const {
@@ -59,16 +64,6 @@ export const ResumeInput = ({ resume, setResume }) => {
     //     phone: '',
     //     template: 1,
     // }
-    const {
-        isOpen: workIsOpen,
-        onOpen: workOnOpen,
-        onClose: workOnClose,
-    } = useDisclosure()
-    const {
-        isOpen: workEditIsOpen,
-        onOpen: workEditOnOpen,
-        onClose: workEditOnClose,
-    } = useDisclosure()
 
     const {
         isOpen: eduIsOpen,
@@ -81,19 +76,19 @@ export const ResumeInput = ({ resume, setResume }) => {
         return resume.experience.indexOf(experience)
     }
 
-    const updateExperience = (index, experience) => {
-        const newExperience = [...resume.experience]
-        newExperience[index] = experience
-        setResume({ ...resume, experience: newExperience })
-    }
+ 
 
     return (
-        <Stack
-            direction={'column'}
+        <VStack
             alignItems={'flex-start'}
             justifyContent={'start'}
             w="100%"
             spacing={4}
+            divider={
+                <Center w="30%" h="100%">
+                    <StackDivider borderColor="gray.200" />
+                </Center>
+            }
         >
             <FormControl id="name" isRequired>
                 <Center>
@@ -103,171 +98,18 @@ export const ResumeInput = ({ resume, setResume }) => {
                     id="identifier"
                     placeholder="Product Manager 2021"
                     value={resume.identifier}
-                    m={1}
                     onChange={(e) =>
                         setResume({
                             ...resume,
                             identifier: e.target.value,
                         })
                     }
+                    variant="filled"
                 />
             </FormControl>
-            <Heading size="md" mb={2}>
-                Perosnal Details
-            </Heading>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="100%">
-                <FormControl>
-                    <FormLabel htmlFor="name">Name</FormLabel>
-                    <Input
-                        id="name"
-                        placeholder="John Smith"
-                        value={name}
-                        onChange={(e) =>
-                            setResume({ ...resume, name: e.target.value })
-                        }
-                    />
-                </FormControl>
-                <FormControl>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="john@example.com"
-                        value={email}
-                        onChange={(e) =>
-                            setResume({ ...resume, email: e.target.value })
-                        }
-                    />
-                </FormControl>
 
-                <FormControl>
-                    <FormLabel htmlFor="phone">Phone</FormLabel>
-                    <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="555-555-5555"
-                        value={phone}
-                        onChange={(e) =>
-                            setResume({ ...resume, phone: e.target.value })
-                        }
-                    />
-                </FormControl>
-            </SimpleGrid>
-            <Heading size="md">Professional Details</Heading>
-            <FormControl>
-                <FormLabel htmlFor="summary">Summary</FormLabel>
-                <Textarea
-                    id="summary"
-                    placeholder="A brief summary of your background and skills."
-                    value={summary}
-                    onChange={(e) =>
-                        setResume({ ...resume, summary: e.target.value })
-                    }
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="experience" mt={2}>
-                    Work and Related Experience
-                </FormLabel>
-                {/* add work experience modal */}
-                {/* make this area drag and droppabel */}
-
-                {experience &&
-                    experience.length > 0 &&
-                    experience.map((exp, index) => {
-                        return (
-                            <>
-                                <Box
-                                    key={index}
-                                    borderWidth="1px"
-                                    p={4}
-                                    roundedTop={index === 0 ? 'md' : 'none'}
-                                    roundedBottom={
-                                        experience &&
-                                        index === experience.length - 1
-                                            ? 'none'
-                                            : 'md'
-                                    }
-                                    onClick={() => {
-                                        console.log('clicked')
-                                    }}
-                                >
-                                    <Stack direction="row">
-                                        <Box>
-                                            <Heading size="sm">
-                                                {exp.company}
-                                            </Heading>
-                                            <Heading size="xs">
-                                                {exp.position}
-                                            </Heading>
-                                        </Box>
-                                        <Box>
-                                            <Badge>{exp.startDate}</Badge>-
-                                            <Badge>{exp.endDate}</Badge>
-                                        </Box>
-                                        {/* edit and delete buttons */}
-                                        <Spacer />
-                                        <IconButton
-                                            aria-label="Edit"
-                                            icon={<EditIcon />}
-                                            onClick={() => {
-                                                workEditOnOpen()
-                                            }}
-                                            colorScheme="orange"
-                                        />
-                                        <IconButton
-                                            aria-label="Delete"
-                                            icon={<DeleteIcon />}
-                                            colorScheme="red"
-                                            onClick={() => {
-                                                const newExperience = [
-                                                    ...resume.experience,
-                                                ]
-                                                newExperience.splice(index, 1)
-                                                setResume({
-                                                    ...resume,
-                                                    experience: newExperience,
-                                                })
-                                            }}
-                                        />
-                                    </Stack>
-                                    <Box>
-                                        <p>{exp.description}</p>
-                                    </Box>
-                                </Box>
-                                {/* experience: any; udateExperienceByIndex: any;
-                                getExperienceIndex: any; workEditIsOpen: any;
-                                workEditOnClose: any; */}
-                                <EditExperienceModal
-                                    experience={exp}
-                                    index={index}
-                                    updateExperience={updateExperience}
-                                    workEditIsOpen={workEditIsOpen}
-                                    workEditOnClose={workEditOnClose}
-                                />
-                            </>
-                        )
-                    })}
-
-                <Button
-                    colorScheme="teal"
-                    variant={useColorModeValue('solid', 'outline')}
-                    onClick={workOnOpen}
-                    w="100%"
-                    roundedTop={
-                        experience && experience.length > 0 ? 'none' : 'md'
-                    }
-                >
-                    <AddIcon mr={1} />
-                    Add Work Experience
-                </Button>
-                <AddExperienceModal
-                    workIsOpen={workIsOpen}
-                    workOnClose={workOnClose}
-                    resume={resume}
-                    setResume={setResume}
-                />
-            </FormControl>
+            <PersonalSection resume={resume} setResume={setResume} />
+            <ProfessionalSection resume={resume} setResume={setResume} />
             {/* same for education */}
             <FormControl>
                 <FormLabel htmlFor="education">Education</FormLabel>
@@ -285,7 +127,7 @@ export const ResumeInput = ({ resume, setResume }) => {
                                         : 'md'
                                 }
                             >
-                                <Flex justifyContent="space-between">
+                                <HStack>
                                     <Box>
                                         <Heading size="sm">
                                             {edu.school}
@@ -293,18 +135,45 @@ export const ResumeInput = ({ resume, setResume }) => {
                                         <Heading size="xs">
                                             {edu.degree}
                                         </Heading>
-                                    </Box>
-                                    <Box>
                                         <Badge>{edu.startDate}</Badge>-
                                         <Badge>{edu.endDate}</Badge>
+                                        <p>{edu.description}</p>
+                                        <IconButton
+                                            aria-label="Edit"
+                                            icon={<EditIcon />}
+                                            onClick={() => {
+                                                eduEditOnOpen()
+                                            }}
+                                            colorScheme="orange"
+                                        />
+                                        <IconButton
+                                            aria-label="Delete"
+                                            icon={<DeleteIcon />}
+                                            colorScheme="red"
+                                            onClick={() => {
+                                                const newEducation = [
+                                                    ...resume.education,
+                                                ]
+                                                newEducation.splice(index, 1)
+                                                setResume({
+                                                    ...resume,
+                                                    education: newEducation,
+                                                })
+                                            }}
+                                        />
+                                        {/* <EditEducationModal
+                                            education={edu}
+                                            index={index}
+                                            updateEducation={updateEducation}
+                                            eduEditIsOpen={eduEditIsOpen}
+                                            eduEditOnClose={eduEditOnClose}
+                                        /> */}
                                     </Box>
-                                </Flex>
-                                <Box>
-                                    <p>{edu.description}</p>
-                                </Box>
+                                </HStack>
                             </Box>
                         )
                     })}
+
                 <Button
                     colorScheme="teal"
                     variant={useColorModeValue('solid', 'outline')}
@@ -404,32 +273,7 @@ export const ResumeInput = ({ resume, setResume }) => {
                 </Modal>
             </FormControl>
             {/* same for skills */}
-            <FormLabel htmlFor="activities">
-                Activities and Hobbies:{' '}
-                {activities &&
-                    activities.map((activity, i) => (
-                        <>
-                            <Badge
-                                key={i}
-                                colorScheme="teal"
-                                size="sm"
-                                m={1}
-                                _hover={{ cursor: 'pointer', color: 'tomato' }}
-                                // onClick={() => setActivities(activities.filter((_, j) => j !== i))}
-                                onClick={() =>
-                                    setResume({
-                                        ...resume,
-                                        activities: activities.filter(
-                                            (_, j) => j !== i
-                                        ),
-                                    })
-                                }
-                            >
-                                {activity}
-                            </Badge>{' '}
-                        </>
-                    ))}
-            </FormLabel>
+        
             {/* array of badges of existing activities  and then an input to add new activities */}
             <InputGroup>
                 <Input
@@ -618,6 +462,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                     }}
                 />
             </FormControl>
-        </Stack>
+        </VStack>
     )
 }

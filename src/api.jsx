@@ -1,18 +1,18 @@
 import axios from 'axios'
 
 var apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api'
-// apiHost = 'http://localhost:3001/api'
+// apiHost = 'http://localhost:8080/api'
 
 export function getResumeList() {
+    const userId = localStorage.getItem('userId')
+    const params = { user_id: userId }
     let config = {
         method: 'get',
         url: `${apiHost}/resumes`,
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        data: {
-            user_id: localStorage.getItem('userId'),
-        },
+        params: params,
     }
     return axios(config)
 }
@@ -44,6 +44,7 @@ export function updateResumeById(data) {
     //add user id to data
 
     data.user_id = localStorage.getItem('userId')
+
     let config = {
         method: 'post',
         url: `${apiHost}/resumes/update/${data._id}`,

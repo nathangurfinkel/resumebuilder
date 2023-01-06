@@ -16,6 +16,7 @@ import {
     Spinner,
     Stack,
     Text,
+    Box,
 } from '@chakra-ui/react'
 import React from 'react'
 import { FileUploader } from 'react-drag-drop-files'
@@ -25,6 +26,7 @@ import { useToast } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { handleDownload } from '../../helpers/handleDownload'
 import { CircularProgress } from '@chakra-ui/react'
+import PacmanLoader from 'react-spinners/PacmanLoader'
 const ToolBar = ({
     localMode,
     setLocalMode,
@@ -103,18 +105,29 @@ const ToolBar = ({
                 width={'100%'}
                 roundedTop={'none'}
                 bg={useColorModeValue('teal.50', 'teal.900')}
+                minH={'80px'}
             >
                 <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                    {resumeList && (
-                        <>
-                            <ResumeMenu
-                                resumeList={resumeList}
-                                setResume={setResume}
-                                resume={resume}
-                                setNewResumeMode={setNewResumeMode}
-                                updateResumeLoading={updateResumeLoading}
+                    {resumeListLoading ? (
+                        <Center minW={'300px'}>
+                            <PacmanLoader
+                                color={'#36D7B7'}
+                                loading={true}
+                                size={15}
                             />
-                        </>
+                        </Center>
+                    ) : (
+                        resumeList && (
+                            <>
+                                <ResumeMenu
+                                    resumeList={resumeList}
+                                    setResume={setResume}
+                                    resume={resume}
+                                    setNewResumeMode={setNewResumeMode}
+                                    updateResumeLoading={updateResumeLoading}
+                                />
+                            </>
+                        )
                     )}
                     {resume && (
                         //delete resume button
