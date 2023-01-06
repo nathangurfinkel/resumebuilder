@@ -10,6 +10,7 @@ import {
     ModalOverlay,
     ModalContent,
     useBreakpointValue,
+    Flex,
 } from '@chakra-ui/react'
 
 import ResumePreview from './ResumePreview'
@@ -161,8 +162,13 @@ const ResumeBuilder = () => {
     const cardWidth = useBreakpointValue({ base: '100%', md: '50%' })
 
     return (
-        <Box>
-            {/* toolbox */}
+        <Stack
+            direction={'column'}
+            alignContent={'center'}
+            alignItems={'center'}
+            justifyContent={'start'}
+            h={'100vh'}
+        >
             <Modal isOpen={loginOpen} onClose={() => setLoginOpen(false)}>
                 <ModalOverlay />
                 <ModalContent maxW={'400px'}>
@@ -172,90 +178,54 @@ const ResumeBuilder = () => {
                     />
                 </ModalContent>
             </Modal>
-
-            <ToolBar
-                updateResumeLoading={updateResumeLoading}
-                localMode={localMode}
-                setLocalMode={setLocalMode}
-                resume={resume}
-                isLoggedIn={isLoggedIn}
-                setLoginOpen={setLoginOpen}
-                resumeListLoading={resumeListLoading}
-                resumeList={resumeList}
-                resumeListError={resumeListError}
-                setResume={setResume}
-                setNewResumeMode={setNewResumeMode}
-                updateResume={updateResume}
-            ></ToolBar>
-
-            {/* end toolbox */}
-
+            {isLoggedIn && (
+                <ToolBar
+                    updateResumeLoading={updateResumeLoading}
+                    localMode={localMode}
+                    setLocalMode={setLocalMode}
+                    resume={resume}
+                    isLoggedIn={isLoggedIn}
+                    setLoginOpen={setLoginOpen}
+                    resumeListLoading={resumeListLoading}
+                    resumeList={resumeList}
+                    resumeListError={resumeListError}
+                    setResume={setResume}
+                    setNewResumeMode={setNewResumeMode}
+                    updateResume={updateResume}
+                    onUpdate={onUpdate}
+                />
+            )}
             {/* new resume box */}
-            {!resume && <NewResume onCreateNewResume={onCreateNewResume} />}
+            {!resume && isLoggedIn && (
+                <NewResume onCreateNewResume={onCreateNewResume} />
+            )}
+
+            {!isLoggedIn && (
+                <Box m={4}>
+                    <LoginForm
+                        modal={false}
+                        onClose={() => setLoginOpen(false)}
+                    ></LoginForm>
+                </Box>
+            )}
+
             {/* end new resume box */}
 
             {/* resume editor */}
-            {!newResumeMode && (
-                <Stack
-                    direction={'row'}
-                    alignItems={'flex-start'}
-                    justifyContent={'flex-start'}
-                    w="100%"
-                    css={{ backgroundColor: 'gray.100' }}
-                    spacing={4}
+            {resume && (
+                <Box
                     p={4}
                     borderRadius="lg"
-                    boxShadow="lg"
-                    roundedTop={'none'}
+                    border={'1px'}
+                    borderColor={'gray.200'}
                 >
-                    {resume && (
-                        <Box
-                            p={4}
-                            borderRadius="lg"
-                            border={'1px'}
-                            borderColor={'gray.200'}
-                        >
-                            <FormControl id="name" isRequired>
-                                <FormLabel>Resume Identifier</FormLabel>
-                                <Input
-                                    id="identifier"
-                                    placeholder="Product Manager 2021"
-                                    // value={resume.identifier}
-                                    m={1}
-                                    onChange={(e) =>
-                                        setResume({
-                                            ...resume,
-                                            identifier: e.target.value,
-                                        })
-                                    }
-                                />
-                            </FormControl>
+                   
 
-                            <ResumeInput
-                                resume={resume}
-                                setResume={setResume}
-                            />
-                        </Box>
-                    )}
-                    <Box
-                        w="60%"
-                        display={{ base: 'none', md: 'block' }}
-                        margin="0 auto"
-                        css={{
-                            position: 'sticky',
-                            top: '0',
-                        }}
-                    >
-                        {resume && (
-                            <ResumePreview
-                                resume={resume}
-                                setResume={setResume}
-                            />
-                        )}
-                    </Box>
-                </Stack>
+                    <ResumeInput resume={resume} setResume={setResume} />
+                </Box>
             )}
-        </Box>
+            {/* end resume editor */}
+        </Stack>
     )
 }
 

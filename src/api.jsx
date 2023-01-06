@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api';
 // const apiHost = 'http://localhost:3001/api';
@@ -10,14 +10,13 @@ export function getResumeList() {
         method: 'get',
         url: `${apiHost}/resumes`,
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         data: {
             user_id: localStorage.getItem('userId'),
-        }
-
-    };
-    return axios(config);
+        },
+    }
+    return axios(config)
 }
 
 export function getResumeById(id) {
@@ -25,9 +24,9 @@ export function getResumeById(id) {
         method: 'get',
         url: `${apiHost}/resumes/${id}`,
         headers: {},
-    };
+    }
 
-    return axios(config);
+    return axios(config)
 }
 
 export function postNewResume(data) {
@@ -38,39 +37,37 @@ export function postNewResume(data) {
             'Content-Type': 'application/json',
         },
         data: data,
-    };
+    }
 
-    return axios(config);
+    return axios(config)
 }
 
 export function updateResumeById(data) {
-    //add user id to data 
+    //add user id to data
 
-    data.user_id = localStorage.getItem('userId');
+    data.user_id = localStorage.getItem('userId')
     let config = {
         method: 'post',
         url: `${apiHost}/resumes/update/${data._id}`,
         headers: {
             'Content-Type': 'application/json',
         },
-        //add user id to data 
+        //add user id to data
         data: data,
-    };
+    }
 
-    return axios(config);
+    return axios(config)
 }
 
 export function deleteResumeById(id) {
-
     let config = {
         method: 'delete',
         url: `${apiHost}/resumes/delete/${id}`,
         headers: {},
-    };
+    }
 
-    return axios(config);
+    return axios(config)
 }
-
 
 // export function getUserById(token: string) {
 //     let config = {
@@ -92,9 +89,9 @@ export function postSignUp(data) {
             'Content-Type': 'application/json',
         },
         data: data,
-    };
+    }
 
-    return axios(config);
+    return axios(config)
 }
 
 export function postSignIn(data) {
@@ -102,13 +99,10 @@ export function postSignIn(data) {
         method: 'post',
         url: `${apiHost}/auth/signin`,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        data: data
-    };
+        data: data,
+    }
 
-    return axios(config);
+    return axios(config)
 }
-
-
-

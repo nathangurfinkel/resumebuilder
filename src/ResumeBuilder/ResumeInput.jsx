@@ -22,8 +22,16 @@ import {
     ModalBody,
     ModalCloseButton,
     SimpleGrid,
+    Center,
+    Stack,
+    useColorMode,
+    useColorModeValue,
+    Spacer,
 } from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import EditExperienceModal from './components/EditExperienceModal'
+import AddExperienceModal from './components/AddExperienceModal'
+import { DragDropContext, Draggable } from 'react-beautiful-dnd'
 
 export const ResumeInput = ({ resume, setResume }) => {
     const {
@@ -46,7 +54,7 @@ export const ResumeInput = ({ resume, setResume }) => {
     //     skills: [],
     //     activities: [],
     //     awards: [],
-    //     experience: [],
+    //     experience: [{ company: '', position: '', startDate: '', endDate: '', description: '' }],
     //     education: [],
     //     phone: '',
     //     template: 1,
@@ -56,6 +64,11 @@ export const ResumeInput = ({ resume, setResume }) => {
         onOpen: workOnOpen,
         onClose: workOnClose,
     } = useDisclosure()
+    const {
+        isOpen: workEditIsOpen,
+        onOpen: workEditOnOpen,
+        onClose: workEditOnClose,
+    } = useDisclosure()
 
     const {
         isOpen: eduIsOpen,
@@ -63,20 +76,46 @@ export const ResumeInput = ({ resume, setResume }) => {
         onClose: eduOnClose,
     } = useDisclosure()
     const toast = useToast()
+
+    const getExperienceIndex = (experience) => {
+        return resume.experience.indexOf(experience)
+    }
+
+    const updateExperience = (index, experience) => {
+        const newExperience = [...resume.experience]
+        newExperience[index] = experience
+        setResume({ ...resume, experience: newExperience })
+    }
+
     return (
-        <Flex
-            borderWidth="0px"
-            p={2}
-            id="resume-input"
+        <Stack
+            direction={'column'}
+            alignItems={'flex-start'}
+            justifyContent={'start'}
             w="100%"
-            m={1}
-            borderRadius="lg"
-            flexDir={'column'}
+            spacing={4}
         >
+            <FormControl id="name" isRequired>
+                <Center>
+                    <FormLabel>Resume Identifier</FormLabel>
+                </Center>
+                <Input
+                    id="identifier"
+                    placeholder="Product Manager 2021"
+                    value={resume.identifier}
+                    m={1}
+                    onChange={(e) =>
+                        setResume({
+                            ...resume,
+                            identifier: e.target.value,
+                        })
+                    }
+                />
+            </FormControl>
             <Heading size="md" mb={2}>
                 Perosnal Details
             </Heading>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="100%">
                 <FormControl>
                     <FormLabel htmlFor="name">Name</FormLabel>
                     <Input
@@ -114,9 +153,7 @@ export const ResumeInput = ({ resume, setResume }) => {
                     />
                 </FormControl>
             </SimpleGrid>
-            <Heading size="md" mb={2}>
-                Professional Summary
-            </Heading>
+            <Heading size="md">Professional Details</Heading>
             <FormControl>
                 <FormLabel htmlFor="summary">Summary</FormLabel>
                 <Textarea
@@ -129,140 +166,107 @@ export const ResumeInput = ({ resume, setResume }) => {
                 />
             </FormControl>
             <FormControl>
-                <FormLabel htmlFor="experience">
+                <FormLabel htmlFor="experience" mt={2}>
                     Work and Related Experience
                 </FormLabel>
                 {/* add work experience modal */}
+                {/* make this area drag and droppabel */}
+
                 {experience &&
+                    experience.length > 0 &&
                     experience.map((exp, index) => {
                         return (
-                            <Box
-                                key={index}
-                                borderWidth="1px"
-                                p={4}
-                                m={1}
-                                borderRadius="lg"
-                            >
-                                <Flex justifyContent="space-between">
+                            <>
+                                <Box
+                                    key={index}
+                                    borderWidth="1px"
+                                    p={4}
+                                    roundedTop={index === 0 ? 'md' : 'none'}
+                                    roundedBottom={
+                                        experience &&
+                                        index === experience.length - 1
+                                            ? 'none'
+                                            : 'md'
+                                    }
+                                    onClick={() => {
+                                        console.log('clicked')
+                                    }}
+                                >
+                                    <Stack direction="row">
+                                        <Box>
+                                            <Heading size="sm">
+                                                {exp.company}
+                                            </Heading>
+                                            <Heading size="xs">
+                                                {exp.position}
+                                            </Heading>
+                                        </Box>
+                                        <Box>
+                                            <Badge>{exp.startDate}</Badge>-
+                                            <Badge>{exp.endDate}</Badge>
+                                        </Box>
+                                        {/* edit and delete buttons */}
+                                        <Spacer />
+                                        <IconButton
+                                            aria-label="Edit"
+                                            icon={<EditIcon />}
+                                            onClick={() => {
+                                                workEditOnOpen()
+                                            }}
+                                            colorScheme="orange"
+                                        />
+                                        <IconButton
+                                            aria-label="Delete"
+                                            icon={<DeleteIcon />}
+                                            colorScheme="red"
+                                            onClick={() => {
+                                                const newExperience = [
+                                                    ...resume.experience,
+                                                ]
+                                                newExperience.splice(index, 1)
+                                                setResume({
+                                                    ...resume,
+                                                    experience: newExperience,
+                                                })
+                                            }}
+                                        />
+                                    </Stack>
                                     <Box>
-                                        <Heading size="sm">
-                                            {exp.company}
-                                        </Heading>
-                                        <Heading size="xs">
-                                            {exp.position}
-                                        </Heading>
+                                        <p>{exp.description}</p>
                                     </Box>
-                                    <Box>
-                                        <Badge>{exp.startDate}</Badge>
-                                        <Badge>{exp.endDate}</Badge>
-                                    </Box>
-                                </Flex>
-                                <Box>
-                                    <p>{exp.description}</p>
                                 </Box>
-                            </Box>
+                                {/* experience: any; udateExperienceByIndex: any;
+                                getExperienceIndex: any; workEditIsOpen: any;
+                                workEditOnClose: any; */}
+                                <EditExperienceModal
+                                    experience={exp}
+                                    index={index}
+                                    updateExperience={updateExperience}
+                                    workEditIsOpen={workEditIsOpen}
+                                    workEditOnClose={workEditOnClose}
+                                />
+                            </>
                         )
                     })}
 
                 <Button
                     colorScheme="teal"
-                    variant="outline"
+                    variant={useColorModeValue('solid', 'outline')}
                     onClick={workOnOpen}
-                    m={0.5}
                     w="100%"
+                    roundedTop={
+                        experience && experience.length > 0 ? 'none' : 'md'
+                    }
                 >
                     <AddIcon mr={1} />
                     Add Work Experience
                 </Button>
-                <Modal isOpen={workIsOpen} onClose={workOnClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Add Work Experience</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                            <FormControl>
-                                <FormLabel htmlFor="company">Company</FormLabel>
-                                <Input id="company" placeholder="Google" />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="position">
-                                    Position
-                                </FormLabel>
-                                <Input
-                                    id="position"
-                                    placeholder="Software Engineer"
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="startDate">
-                                    Start Date
-                                </FormLabel>
-                                <Input id="startDate" type="date" />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="endDate">
-                                    End Date
-                                </FormLabel>
-                                <Input id="endDate" type="date" />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="description">
-                                    Description
-                                </FormLabel>
-                                <Textarea
-                                    id="description"
-                                    placeholder="A brief summary of your background and skills."
-                                />
-                            </FormControl>
-                        </ModalBody>
-
-                        <ModalFooter>
-                            <Button
-                                colorScheme="blue"
-                                mr={3}
-                                onClick={() => {
-                                    setResume({
-                                        ...resume,
-                                        experience: [
-                                            ...(experience ? experience : []),
-                                            {
-                                                company:
-                                                    document.getElementById(
-                                                        'company'
-                                                    )?.value,
-                                                position:
-                                                    document.getElementById(
-                                                        'position'
-                                                    )?.value,
-                                                startDate:
-                                                    document.getElementById(
-                                                        'startDate'
-                                                    )?.value,
-                                                endDate:
-                                                    document.getElementById(
-                                                        'endDate'
-                                                    )?.value,
-                                                description:
-                                                    document.getElementById(
-                                                        'description'
-                                                    )?.value,
-                                            },
-                                        ],
-                                    })
-                                    workOnClose()
-                                }}
-                            >
-                                Save
-                            </Button>
-                            <Button variant="ghost" onClick={workOnClose}>
-                                Cancel
-                            </Button>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-
-                {/* work experience list  */}
-                {/* edit work experience modal */}
+                <AddExperienceModal
+                    workIsOpen={workIsOpen}
+                    workOnClose={workOnClose}
+                    resume={resume}
+                    setResume={setResume}
+                />
             </FormControl>
             {/* same for education */}
             <FormControl>
@@ -274,8 +278,12 @@ export const ResumeInput = ({ resume, setResume }) => {
                                 key={index}
                                 borderWidth="1px"
                                 p={4}
-                                m={1}
-                                borderRadius="lg"
+                                roundedTop={index === 0 ? 'md' : 'none'}
+                                roundedBottom={
+                                    education && index === education.length - 1
+                                        ? 'none'
+                                        : 'md'
+                                }
                             >
                                 <Flex justifyContent="space-between">
                                     <Box>
@@ -287,7 +295,7 @@ export const ResumeInput = ({ resume, setResume }) => {
                                         </Heading>
                                     </Box>
                                     <Box>
-                                        <Badge>{edu.startDate}</Badge>
+                                        <Badge>{edu.startDate}</Badge>-
                                         <Badge>{edu.endDate}</Badge>
                                     </Box>
                                 </Flex>
@@ -299,12 +307,14 @@ export const ResumeInput = ({ resume, setResume }) => {
                     })}
                 <Button
                     colorScheme="teal"
-                    variant="outline"
+                    variant={useColorModeValue('solid', 'outline')}
                     onClick={eduOnOpen}
-                    m={0.5}
                     w="100%"
+                    leftIcon={<AddIcon />}
+                    roundedTop={
+                        education && education.length > 0 ? 'none' : 'md'
+                    }
                 >
-                    <AddIcon mr={1} />
                     Add Education
                 </Button>
                 <Modal isOpen={eduIsOpen} onClose={eduOnClose}>
@@ -608,22 +618,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                     }}
                 />
             </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="education">Education</FormLabel>
-                {/* same as work */}
-
-                <Input
-                    id="education"
-                    placeholder="School, Degree, Field"
-                    // value={education.map(e => `${e.school}, ${e.degree}, ${e.field}`).join('; ')}
-                    onChange={(e) =>
-                        setResume({
-                            ...resume,
-                            education: e.target.value.split('; '),
-                        })
-                    }
-                />
-            </FormControl>
-        </Flex>
+        </Stack>
     )
 }
