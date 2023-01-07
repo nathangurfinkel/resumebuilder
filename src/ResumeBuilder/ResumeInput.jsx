@@ -60,7 +60,7 @@ export const ResumeInput = ({ resume, setResume }) => {
     //     activities: [],
     //     awards: [],
     //     experience: [{ company: '', position: '', startDate: '', endDate: '', description: '' }],
-    //     education: [],
+    //     education: [{ school: '', degree: '', startDate: '', endDate: '', description: '' }
     //     phone: '',
     //     template: 1,
     // }
@@ -76,13 +76,12 @@ export const ResumeInput = ({ resume, setResume }) => {
         return resume.experience.indexOf(experience)
     }
 
- 
-
     return (
         <VStack
             alignItems={'flex-start'}
             justifyContent={'start'}
             w="100%"
+            // minW={'100%'}
             spacing={4}
             divider={
                 <Center w="30%" h="100%">
@@ -273,7 +272,7 @@ export const ResumeInput = ({ resume, setResume }) => {
                 </Modal>
             </FormControl>
             {/* same for skills */}
-        
+
             {/* array of badges of existing activities  and then an input to add new activities */}
             <InputGroup>
                 <Input

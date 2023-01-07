@@ -1,17 +1,20 @@
-
-
-
 [] how to monetize
 [] write "PERSONA" story about me and how I came to do it
 [] dplicate eductaion modals as work modals
-[] pdf bootstrap !!! 
+[] pdf bootstrap !!!
 [] preview render
 [] rich text area for descriptions
 [] user manuals
-[] convert new resume creation 
-[] debug list 
-[] toolbar delete "file" button 
+[] convert new resume creation
+[] debug list
+[] toolbar delete "file" button
 [] toolbar : button duplicate
 [] toolbar : button create new
+[] add rich text and
+[] xs - sm for buttons.
+[] unify button style
+[] decide on sizing and fix
+[] hot update toggle
+[] settings menu
 
 I have a 2017 13" MacBook Pro and I'm trying to delete a bookmark from the toolbar. I've tried clicking and holding the bookmark, but it doesn't do anything. I've also tried right clicking, but that doesn't do anything either. I've tried clicking and holding the bookmark, but it doesn't do anything. I've also tried right clicking, but that doesn't do anything either.

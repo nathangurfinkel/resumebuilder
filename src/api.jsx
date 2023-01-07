@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 var apiHost = 'https://seahorse-app-cyj7w.ondigitalocean.app/api'
-apiHost = 'http://localhost:8080/api'
+// apiHost = 'http://localhost:8080/api'
 
 export function getResumeList() {
     const userId = localStorage.getItem('userId')

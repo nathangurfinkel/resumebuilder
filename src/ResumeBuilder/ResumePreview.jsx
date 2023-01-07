@@ -7,8 +7,14 @@ import {
     ListItem,
     Text,
     Link,
+    AspectRatio,
+    Slider,
+    SliderTrack,
+    SliderFilledTrack,
+    SliderThumb,
 } from '@chakra-ui/react'
-
+import Template1 from './Templates/Template1'
+import { useState } from 'react'
 const ResumePreview = ({
     resume: {
         name,
@@ -23,171 +29,47 @@ const ResumePreview = ({
         templateId,
     },
 }) => {
+    const [zoom, setZoom] = useState(100)
+
     return (
         // a4 aspect ratio
         <Flex borderWidth="1px" p={4} borderRadius="lg" flexDir={'column'}>
             <Heading size={'md'} mb={2}>
                 Preview
             </Heading>
-
             <Box
-                borderWidth="1px"
-                p={4}
+                maxW="80%"
+                maxH="100%"
+                ratio={210 / 297}
+                __css={{
+                    zoom: zoom / 100,
+                    transform: `scale(${zoom / 100})` /* Safari */,
+                    transformOrigin: 'top left',
+                }}
                 id="resume-preview"
-                maxW={420}
-                maxH={595}
             >
-                <Stack spacing={4}>
-                    <Stack spacing={4} direction="row">
-                        <Heading size={'md'} mb={4}>
-                            {name}
-                        </Heading>
-                        <Link href={`mailto:${email}`} isExternal>
-                            <Text fontSize="xs" mb={4}>
-                                {email}
-                            </Text>
-                        </Link>
-                    </Stack>
+                <Template1
+                    //         name: any;
+                    // email: any;
+                    // summary: any;
+                    // skills: any;
+                    // activities: any;
+                    // awards: any;
+                    // experience: any;
+                    // education: any;
+                    // phone: any;
 
-                    <Box mb={4}>{summary}</Box>
-                    <Heading as="h3" mb={4}>
-                        Skills
-                    </Heading>
-                    {skills && (
-                        <List styleType="disc">
-                            {skills.map((skill) => (
-                                <ListItem key={skill}>{skill}</ListItem>
-                            ))}
-                        </List>
-                    )}
-                    <Heading as="h3" mb={4}>
-                        Activities and Hobbies
-                    </Heading>
-                    {activities && (
-                        <List styleType="disc">
-                            {activities.map((activity) => (
-                                <ListItem key={activity}>{activity}</ListItem>
-                            ))}
-                        </List>
-                    )}
-                    <Heading as="h3" mb={4}>
-                        Awards and Honors
-                    </Heading>
-                    {awards && (
-                        <List styleType="disc">
-                            {awards.map((award) => (
-                                <ListItem key={award}>{award}</ListItem>
-                            ))}
-                        </List>
-                    )}
-                    <Heading as="h3" mb={4}>
-                        Work and Related Experience
-                    </Heading>
-                    {experience && (
-                        <List styleType="disc">
-                            {experience.map(
-                                ({ company, title, description }) => (
-                                    <ListItem key={company}>
-                                        <Heading as="h4" mb={2}>
-                                            {title} at {company}
-                                        </Heading>
-                                        <Box>{description}</Box>
-                                    </ListItem>
-                                )
-                            )}
-                        </List>
-                    )}
-                    <Heading as="h3" mb={4}>
-                        Education
-                    </Heading>
-                    {education && (
-                        <List styleType="disc">
-                            {education.map(({ school, degree, field }) => (
-                                <ListItem key={school}>
-                                    <Heading as="h4" mb={2}>
-                                        {degree} in {field} from {school}
-                                    </Heading>
-                                </ListItem>
-                            ))}
-                        </List>
-                    )}
-                </Stack>
+                    name={name}
+                    email={email}
+                    summary={summary}
+                    skills={skills}
+                    activities={activities}
+                    awards={awards}
+                    experience={experience}
+                    education={education}
+                    phone={phone}
+                />
             </Box>
-
-            {templateId === 2 && (
-                <Box
-                    m={8}
-                    borderWidth="1px"
-                    p={4}
-                    id="resume-preview"
-                    maxW={420}
-                    maxH={595}
-                >
-                    <Stack spacing={4}>
-                        <Stack spacing={4} direction="row">
-                            <Heading size={'md'} mb={4}>
-                                {name}
-                            </Heading>
-                            <Link href={`mailto:${email}`} isExternal>
-                                <Text fontSize="xs" mb={4}>
-                                    {email}
-                                </Text>
-                            </Link>
-                        </Stack>
-                        <Box mb={4}>{summary}</Box>
-                        <Heading as="h6" mb={4}>
-                            Skills
-                        </Heading>
-                        <List styleType="disc">
-                            {skills.map((skill) => (
-                                <ListItem key={skill}>{skill}</ListItem>
-                            ))}
-                        </List>
-                        <Heading as="h3" mb={4}>
-                            Activities and Hobbies
-                        </Heading>
-                        <List styleType="disc">
-                            {activities.map((activity) => (
-                                <ListItem key={activity}>{activity}</ListItem>
-                            ))}
-                        </List>
-                        <Heading as="h3" mb={4}>
-                            Awards and Honors
-                        </Heading>
-                        <List styleType="disc">
-                            {awards.map((award) => (
-                                <ListItem key={award}>{award}</ListItem>
-                            ))}
-                        </List>
-                        <Heading as="h3" mb={4}>
-                            Work and Related Experience
-                        </Heading>
-                        {experience &&
-                            experience.map(
-                                ({ company, position, description }) => (
-                                    <Box>
-                                        <Heading as="h4" mb={2}>
-                                            {position} at {company}
-                                        </Heading>
-                                        <Box>{description}</Box>
-                                    </Box>
-                                )
-                            )}
-                        <Heading as="h3" mb={4}>
-                            Education
-                        </Heading>
-                        <List styleType="disc">
-                            {education.map(({ school, degree, field }) => (
-                                <ListItem key={school}>
-                                    <Heading as="h4" mb={2}>
-                                        {degree} in {field} from {school}
-                                    </Heading>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Stack>
-                </Box>
-            )}
         </Flex>
     )
 }

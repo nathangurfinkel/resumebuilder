@@ -33,6 +33,18 @@ import {
     AlertDialogHeader,
     AlertDialogCloseButton,
     useToast,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    Icon,
+    MenuDivider,
+    Badge,
+    Heading,
+    Alert,
+    AlertIcon,
+    AlertDescription,
+    AlertTitle,
 } from '@chakra-ui/react'
 import React from 'react'
 import { FileUploader } from 'react-drag-drop-files'
@@ -44,6 +56,17 @@ import { CircularProgress } from '@chakra-ui/react'
 import PacmanLoader from 'react-spinners/PacmanLoader'
 import { useRequest } from 'ahooks'
 import { deleteResumeById } from '../../api'
+import { DeleteIcon } from '@chakra-ui/icons'
+import {
+    BsFile,
+    BsFileEarmark,
+    BsFileEarmarkArrowUp,
+    BsFilePdfFill,
+} from 'react-icons/bs'
+import { VscFilePdf, VscJson } from 'react-icons/vsc'
+import { AiOutlineFileWord } from 'react-icons/ai'
+import jsPDF from 'jspdf'
+
 const ToolBar = ({
     localMode,
     setLocalMode,
@@ -71,17 +94,24 @@ const ToolBar = ({
         { base: '', md: 'Download File' },
         { fallback: 'base' }
     )
+
+    const savedText = useBreakpointValue(
+        { base: '', md: 'Saved' },
+        { fallback: 'base' }
+    )
     const [fileUploadOpen, setFileUploadOpen] = React.useState(false)
     const [file, setFile] = useState(null)
-    const handleFile = (file) => {
+    const handleChange = (file) => {
+        console.log('file', file)
+        setFile(file)
         try {
             // read the file data - its a .json file
             const fileReader = new FileReader()
             fileReader.readAsText(file, 'UTF-8')
             fileReader.onload = (e) => {
                 const resumeData = JSON.parse(e.target.result)
-                setResume(resumeData)
-                setNewResumeMode(false)
+                setResume({ ...resume, ...resumeData })
+                // setNewResumeMode(false)
                 console.log('resumeData', resumeData)
                 toast({
                     title: 'Resume ' + resumeData?.identifier + ' uploaded',
@@ -90,8 +120,10 @@ const ToolBar = ({
                     duration: 9000,
                     isClosable: true,
                 })
+                updateResume(resumeData)
             }
         } catch (error) {
+            setFile(null)
             toast({
                 title: 'Invalid file',
                 description: 'The file you selected is not a valid resume file',
@@ -101,6 +133,18 @@ const ToolBar = ({
             })
         }
     }
+    const exportAsPDF = () => {
+        const doc = new jsPDF('portrait', 'pt', 'a4')
+        doc.html(document.getElementById('resume-preview'), {
+            callback: (doc) => {
+                doc.save('resume.pdf')
+            },
+        })
+    }
+    // useEffect(() => {
+    //     console.log('file', file)
+
+    // }, [file])
 
     const {
         data: deleteResumeData,
@@ -140,107 +184,120 @@ const ToolBar = ({
             <FileUploadModal
                 fileUploadOpen={fileUploadOpen}
                 setFileUploadOpen={setFileUploadOpen}
-                handleFile={handleFile}
-                file={file}
+                handleChange={handleChange}
             />
 
-            <Stack
-                divider={<Divider orientation="vertical" />}
+            <HStack
+                divider={
+                    <Divider
+                        orientation="vertical"
+                        color={'gray.300'}
+                        h={'100%'}
+                    />
+                }
                 spacing={4}
                 p={4}
                 mx={2}
                 borderRadius="lg"
                 boxShadow="md"
-                direction={'row'}
                 alignItems={'center'}
                 justifyContent={'start'}
-                width={'100%'}
+                minW={'100%'}
                 roundedTop={'none'}
                 bg={useColorModeValue('teal.50', 'teal.900')}
                 minH={'80px'}
+                maxW={'100vw'}
             >
-                <HStack alignItems={'center'} spacing={2}>
-                    {resumeListLoading ? (
-                        <Center minW={'300px'}>
-                            <PacmanLoader
-                                color={'#36D7B7'}
-                                loading={true}
-                                size={15}
-                            />
-                        </Center>
-                    ) : (
-                        resumeList && (
-                            <>
-                                <ResumeMenu
-                                    resumeList={resumeList}
-                                    setResume={setResume}
-                                    resume={resume}
-                                    setNewResumeMode={setNewResumeMode}
-                                    updateResumeLoading={updateResumeLoading}
-                                />
-                            </>
-                        )
-                    )}
-                    {resume && (
-                        //delete resume button
-                        <DeleteResume
-                            resume={resume}
-                            setResume={setResume}
-                            setNewResumeMode={setNewResumeMode}
-                            deleteResume={deleteResume}
-                        />
-                    )}
-                    {!newResumeMode && (
-                        <CreateResumeButton
-                            resume={resume}
-                            setResume={setResume}
-                            setNewResumeMode={setNewResumeMode}
-                        />
-                    )}
-                </HStack>
-
-                {/* draw sync icon inside circular progress and if udpdateResume show check icon */}
-                {updateResumeLoading ? (
-                    <Spinner color="teal.500" size="md" thickness="4px" />
-                ) : (
-                    updateResume && (
-                        <CheckCircleIcon color="green.500" fontSize="xl" />
-                    )
+                {resumeList && (
+                    <ResumeMenu
+                        resumeList={resumeList}
+                        setResume={setResume}
+                        resume={resume}
+                        setNewResumeMode={setNewResumeMode}
+                        updateResumeLoading={updateResumeLoading}
+                    />
                 )}
-                <Spacer />
-                <>
-                    <Button
-                        onClick={() => setFileUploadOpen(true)}
-                        size="sm"
-                        variant={'ghost'}
-                    >
-                        <ArrowUpIcon />
-                        <Text fontSize={'sm'}>{uploadText}</Text>
-                    </Button>
+                {resume && (
+                    //delete resume button
+                    <DeleteResume
+                        resume={resume}
+                        setResume={setResume}
+                        setNewResumeMode={setNewResumeMode}
+                        deleteResume={deleteResume}
+                    />
+                )}
+                {!newResumeMode && (
+                    <NewResumeButton
+                        resume={resume}
+                        setResume={setResume}
+                        setNewResumeMode={setNewResumeMode}
+                    />
+                )}
+                {/* draw sync icon inside circular progress and if udpdateResume show check icon */}
 
-                    <Button
-                        onClick={() => handleDownload(resume)}
+                <Button
+                    size="sm"
+                    variant={'ghost'}
+                    colorScheme={'teal'}
+                    leftIcon={
+                        <CheckCircleIcon color="green.500" fontSize="md" />
+                    }
+                    iconSpacing={downloadText ? 2 : 0}
+                    isLoading={updateResumeLoading}
+                >
+                    {savedText}
+                </Button>
+
+                <Menu>
+                    <MenuButton
+                        as={Button}
                         size="sm"
-                        variant={'ghost'}
-                        isDisabled={!resume}
+                        variant={'solid'}
+                        // isDisabled={!resume}
+                        colorScheme={'teal'}
+                        leftIcon={<BsFileEarmark />}
+                        iconSpacing={downloadText ? 2 : 0}
                     >
-                        <ArrowDownIcon mr={2} />
-                        <Text fontSize={'sm'}>{downloadText}</Text>
-                    </Button>
-                </>
-            </Stack>
+                        {downloadText}
+                    </MenuButton>
+                    <MenuList>
+                        <MenuDivider />
+                        <MenuItem
+                            onClick={() => exportAsPDF()}
+                            icon={<VscFilePdf />}
+                        >
+                            Download PDF
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleDownload(resume, 'docx')}
+                            icon={<Icon as={AiOutlineFileWord} />}
+                        >
+                            Download DOCX
+                        </MenuItem>
+                        <MenuDivider></MenuDivider>
+                        <MenuItem
+                            onClick={() => setFileUploadOpen(true)}
+                            icon={<Icon as={VscJson} />}
+                        >
+                            Upload JSON
+                        </MenuItem>
+
+                        <MenuItem
+                            onClick={() => handleDownload(resume, 'json')}
+                            icon={<Icon as={VscJson} />}
+                        >
+                            Download JSON
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
+            </HStack>
         </>
     )
 }
 
 export default ToolBar
 
-function FileUploadModal({
-    fileUploadOpen,
-    setFileUploadOpen,
-    handleFile,
-    file,
-}) {
+function FileUploadModal({ fileUploadOpen, setFileUploadOpen, handleChange }) {
     return (
         <Modal
             isOpen={fileUploadOpen}
@@ -253,19 +310,32 @@ function FileUploadModal({
 
                 <ModalHeader>Modal Title</ModalHeader>
                 <ModalCloseButton />
+                <Alert
+                    status="warning"
+                    flexDirection="row"
+                    alignItems="center"
+                    justifyContent="center"
+                    textAlign="start"
+                >
+                    {' '}
+                    <AlertIcon />
+                    <AlertTitle mr={2}>
+                        This will overwrite current resume!
+                    </AlertTitle>
+                    <AlertDescription ml={2}>
+                        If you want to keep your current resume, please create a
+                        new resume first.
+                    </AlertDescription>
+                </Alert>
                 <ModalBody>
                     <FileUploader
-                        handleChange={handleFile}
-                        file={file}
+                        handleChange={handleChange}
+                        name={'resume'}
                         types={['json']}
                     />
                 </ModalBody>
 
-                <ModalFooter>
-                    <Button colorScheme="blue" mr={3}>
-                        Close
-                    </Button>
-                </ModalFooter>
+                <ModalFooter></ModalFooter>
             </ModalContent>
         </Modal>
     )
@@ -274,17 +344,22 @@ function FileUploadModal({
 // CreateResume icon button that sets newResumeMode to true
 // and sets resume to null
 
-function CreateResumeButton({ setNewResumeMode, setResume }) {
+function NewResumeButton({ setNewResumeMode, setResume }) {
+    const text = useBreakpointValue({ base: '', md: 'New Resume' })
     return (
         <Button
             aria-label="Create Resume"
-            leftIcon={<AddIcon />}
             onClick={() => {
                 setNewResumeMode(true)
                 setResume(null)
             }}
+            leftIcon={<AddIcon />}
+            colorScheme={'teal'}
+            iconSpacing={useBreakpointValue({ base: 0, md: 2 })}
+            variant={'ghost'}
+            size={useBreakpointValue({ base: 'sm', md: 'md' })}
         >
-            New Resume
+            {text}
         </Button>
     )
 }
@@ -294,17 +369,20 @@ function DeleteResume({ resume, deleteResume, setResume, setNewResumeMode }) {
         deleteResume(resume._id)
         onClose()
     }
+    const deleteText = useBreakpointValue({ base: '', md: 'Delete' })
     const cancelRef = React.useRef()
 
     return (
         <>
             <Button
-                size="md"
+                size={{ base: 'sm', md: 'md' }}
                 variant={'ghost'}
                 colorScheme="red"
                 onClick={onOpen}
+                leftIcon={<DeleteIcon />}
+                iconSpacing={{ base: 0, md: 2 }}
             >
-                <Text fontSize={'sm'}>Delete</Text>
+                {deleteText}
             </Button>
 
             <AlertDialog

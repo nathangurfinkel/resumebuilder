@@ -39,7 +39,9 @@ const ProfessionalSection = ({ resume, setResume }) => {
 
     return (
         <>
-            <Heading size="md">Professional Details</Heading>
+            <Heading size="md" mb={2}>
+                Professional Details
+            </Heading>
             <FormControl>
                 <FormLabel htmlFor="summary">Summary</FormLabel>
                 <Textarea

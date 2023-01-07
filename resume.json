@@ -1,0 +1,60 @@
+{
+    "name": "Nathan Gurfinkel",
+    "email": "natan.gurfinkel@gmail.com",
+    "phone": "0542197713",
+    "summary": "Looking for an engaging position with high level of teamwork and responsibility. Eager to contribute to company's growth. Love learning new technologies and exploring different work approaches. Hardworking and attentive to details. Excellent communication, collaboration and auto-didactic skills. Scholar of the Moshal Scholarship Program. Currently finishing a full-stack project in the field of retail self-service.",
+    "skills": [
+      "Python",
+      "JS",
+      "Java",
+      "C",
+      "React.js",
+      "Django",
+      "PostgreSQL",
+      "MongoDB",
+      "UML",
+      "ERD",
+      "BPMN",
+      "SM",
+      "Tableau",
+      "CliqSense"
+    ],
+    "experience": [
+      {
+        "company": "Full-stack developer for a commission store chain, Haifa",
+        "position": "Full-stack developer",
+        "startDate": "May 2022",
+        "endDate": "Present",
+        "description": "Designed and implemented a self-service solution for an autonomous shopping experience according to complex requirements and business logic. Developed an online storefront, kiosk interface and back-office. Have performed all the required project stages, including: close study of the business process, assessment of hardware and software requirements, hardware market research, negotiations with suppliers and orders, actual installation, assessment of the software requirements and migration plan from a WordPress platform, implementation of the software stack, staff and customer feedback survey and minor adjustments in accord, staff training. Technologies and frameworks used: Self-service Kiosk interface: React.js, Material UI. Storefront: React.js, Next.js. Back-office: React.js, ReactAdmin. Server side: Python, Django, PostgreSQL. Customer Door Access control: TTlock smart-lock platform. Hosting and version control: Digital Ocean App Platform, Docker and GitHub. The revenue of the store rose instantly by 80% and growing steadily since."
+      },
+      {
+        "company": "Computer Technician and Tutor, Self-employed",
+        "position": "Computer Technician and Tutor",
+        "startDate": "August 2016",
+        "endDate": "Present",
+        "description": "Workflow and collaboration optimization for small businesses. Installing, configuring and repairing PC and Mac equipment, including operating systems, networking and peripherals for home users and small scale businesses. Providing guiding and tutoring for both hardware and software usage."
+      }
+    ],
+    "education": [
+      {
+        "school": "Information Systems (Machine Learning emphasis), BSc, Haifa University",
+        "degree": "BSc in Information Systems",
+        "startDate": "2019",
+        "endDate": "Present",
+        "description": "Notable and favorite courses (technologies and tools practiced): UX/UI theory (Adobe XD, Figma), Business Intelligence (CliqSense, Tableau), Big Data and Information Systems (Google Cloud Platform, Spark), Information System Design (Visual Paradigm), Operating Systems (Linux, Bash, C)."
+      }
+    ],
+    "hobbies": [
+     
+  "Vintage Hi-Fi collection and restoration",
+    "Woodworking",
+    "Cycling",
+    "Kayaking"
+  ],
+  "languages": [
+    "English",
+    "Hebrew",
+    "Russian",
+    "Ukrainian"
+  ]
+}

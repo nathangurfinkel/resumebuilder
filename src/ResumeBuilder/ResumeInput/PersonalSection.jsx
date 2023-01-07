@@ -14,7 +14,7 @@ const PersonalSection = ({ resume, setResume }) => {
     const { name, email, phone } = resume
 
     return (
-        <Box>
+        <Box w="100%">
             <Heading size="md" mb={2}>
                 Perosnal Details
             </Heading>

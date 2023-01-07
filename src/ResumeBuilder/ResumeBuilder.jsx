@@ -11,6 +11,7 @@ import {
     ModalContent,
     useBreakpointValue,
     Flex,
+    SimpleGrid,
 } from '@chakra-ui/react'
 
 import ResumePreview from './ResumePreview'
@@ -24,7 +25,7 @@ import { useNavigate } from 'react-router-dom'
 import LoginForm from '../auth/LoginForm'
 import { AuthContext } from '../auth/AuthProvider'
 import ToolBar from './components/ToolBar'
-import NewResume from './components/NewResume'
+import NewResumeForm from './components/NewResume'
 const ResumeBuilder = () => {
     const [fileUploadOpen, setFileUploadOpen] = useState(false)
     const { isLoggedIn, handleLogin, token, userId, expiresAt } =
@@ -100,12 +101,13 @@ const ResumeBuilder = () => {
         error: updateResumeError,
         run: updateResumeRun,
     } = useRequest(updateResumeById, {
+        // manual: true,
         throttleWait: 5000,
-
+        debounceInterval: 5000,
+        throttleTrailing: true,
         ready: resume && resume.identifier,
         refreshDeps: [resume],
         defaultParams: [resume],
-        debounceInterval: 5000,
 
         onError: (error, params) => {
             console.log('error', error)
@@ -117,6 +119,15 @@ const ResumeBuilder = () => {
             resumeListRefresh()
         },
     })
+
+    useEffect(() => {
+        // removes NewResumeButton
+        if (resumeList && resumeList.data.length === 0) {
+            setNewResumeMode(true)
+        } else {
+            setNewResumeMode(false)
+        }
+    }, [resumeList])
 
     React.useEffect(() => {
         if (isLoggedIn) {
@@ -176,15 +187,15 @@ const ResumeBuilder = () => {
     //     }
     // }, [resume])
 
-    const cardWidth = useBreakpointValue({ base: '100%', md: '50%' })
+    const inputWidth = useBreakpointValue({ base: '100%', md: '45%' })
 
     return (
         <Stack
             direction={'column'}
-            alignContent={'center'}
             alignItems={'center'}
             justifyContent={'start'}
-            h={'100vh'}
+            // bg={'red.500'}
+            px={4}
         >
             <Modal isOpen={loginOpen} onClose={() => setLoginOpen(false)}>
                 <ModalOverlay />
@@ -215,7 +226,11 @@ const ResumeBuilder = () => {
                 />
             )}
             {/* new resume box */}
-            {!resume && isLoggedIn && <NewResume newResumeRun={newResumeRun} />}
+            {!resume && isLoggedIn && (
+                <Box m={4}>
+                    <NewResumeForm newResumeRun={newResumeRun} />
+                </Box>
+            )}
 
             {!isLoggedIn && (
                 <Box m={4}>
@@ -230,16 +245,20 @@ const ResumeBuilder = () => {
 
             {/* resume editor */}
             {resume && (
-                <Box
-                    p={4}
-                    borderRadius="lg"
-                    border={'1px'}
-                    borderColor={'gray.200'}
-                >
-                    <ResumeInput resume={resume} setResume={setResume} />
-                </Box>
+                <SimpleGrid columns={2} spacing={10}>
+                    <Box
+                        p={4}
+                        borderRadius="lg"
+                        border={'1px'}
+                        borderColor={'gray.200'}
+                        // w={inputWidth}
+                    >
+                        <ResumeInput resume={resume} setResume={setResume} />
+                    </Box>
+
+                    <ResumePreview resume={resume} />
+                </SimpleGrid>
             )}
-            {/* end resume editor */}
         </Stack>
     )
 }

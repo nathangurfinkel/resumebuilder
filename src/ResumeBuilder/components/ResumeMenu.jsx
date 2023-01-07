@@ -33,60 +33,80 @@ function ResumeMenu({
             <div className={className}>
                 <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
                     <MenuButton
-                        w={{ base: '100%', md: '300px' }}
+                        maxW={{ base: '150px', md: '300px' }}
+                        minW={{ base: '150px', md: '300px' }}
                         as={Button}
                         rightIcon={<ChevronDownIcon />}
+                        isDisabled={resumeList && resumeList.data.length === 0}
                     >
                         {resume && (
-                            <Heading size={{ base: 'sm', md: 'md' }}>
+                            <Heading
+                                size={{ base: 'xs', md: 'sm' }}
+                                isTruncated
+                            >
                                 {resume.identifier}
                             </Heading>
                         )}
                         {!resume &&
                             resumeList &&
                             resumeList.data.length === 0 && (
-                                <Heading size={{ base: 'sm', md: 'md' }}>
+                                <Heading
+                                    size={{ base: 'xs', md: 'sm' }}
+                                    isTruncated
+                                >
                                     No Resumes
                                 </Heading>
                             )}
                         {!resume &&
                             resumeList &&
-                            resumeList.data.length > 1 && (
-                                <Heading size={{ base: 'sm', md: 'md' }}>
+                            resumeList.data.length >= 1 && (
+                                <Heading
+                                    size={{ base: 'xs', md: 'sm' }}
+                                    isTruncated
+                                >
                                     Select Resume
                                 </Heading>
                             )}
                     </MenuButton>
-                    <MenuList>
-                        {resumeList.data.map((resume) => (
-                            <MenuItem
-                                key={resume._id}
-                                onClick={() => {
-                                    setResume(resume)
-                                    setNewResumeMode(false)
-                                }}
-                            >
-                                <Heading size={{ base: 'sm', md: 'md' }}>
-                                    {resume.identifier}
-                                </Heading>
-                                <Spacer />
-                                {
-                                    //check if first resume in list
-                                    resumeList.data[0]._id === resume._id && (
-                                        <Badge
-                                            colorScheme="blue"
-                                            size={{ base: 'sm', md: 'md' }}
-                                            variant="outline"
-                                        >
-                                            <Text fontSize="sm">
-                                                last updated
-                                            </Text>
-                                        </Badge>
-                                    )
-                                }
-                            </MenuItem>
-                        ))}
-                    </MenuList>
+                    {resumeList && resumeList.data.length !== 0 && (
+                        <MenuList
+                            maxW={{ base: '300px', md: '300px' }}
+                            minW={{ base: '150px', md: '300px' }}
+                        >
+                            {resumeList.data.map((resume) => (
+                                <MenuItem
+                                    key={resume._id}
+                                    onClick={() => {
+                                        setResume(resume)
+                                        setNewResumeMode(false)
+                                    }}
+                                >
+                                    <Heading
+                                        size={{ base: 'xs', md: 'sm' }}
+                                        isTruncated
+                                    >
+                                        {resume.identifier}
+                                    </Heading>
+                                    <Spacer />
+                                    {
+                                        //check if first resume in list
+                                        resumeList.data[0]._id ===
+                                            resume._id && (
+                                            <Badge
+                                                colorScheme="blue"
+                                                size={{ base: 'xs', md: 'sm' }}
+                                                variant="outline"
+                                            >
+                                                <Text fontSize="sm">
+                                                    last updated
+                                                </Text>
+                                            </Badge>
+                                        )
+                                    }
+                                </MenuItem>
+                            ))}
+                        </MenuList>
+                    )}
                 </Menu>
             </div>
         </>
