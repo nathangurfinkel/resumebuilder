@@ -32,7 +32,7 @@ const ResumeBuilder = () => {
         useContext(AuthContext)
 
     const [loginOpen, setLoginOpen] = useState(false)
-    const [newResumeMode, setNewResumeMode] = useState(false)
+    const [newResumeMode, setNewResumeMode] = useState(true)
     const [localMode, setLocalMode] = useState(false)
     const toast = useToast()
     const navigate = useNavigate()

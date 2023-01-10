@@ -14,9 +14,14 @@ import {
     useToast,
     ModalFooter,
 } from '@chakra-ui/react'
+import Editor from './RichTextEditor'
+import RichTextEditor from './RichTextEditor'
 
 function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
     console.log('resume', resume)
+
+    const [description, setDescription] = React.useState('')
+
     const onSubmit = (e) => {
         console.log('onSubmit')
         e.preventDefault()
@@ -24,7 +29,6 @@ function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
         const position = e.target.position.value
         const startDate = e.target.startDate.value
         const endDate = e.target.endDate.value
-        const description = e.target.description.value
         const newExperience = {
             company,
             position,
@@ -81,9 +85,13 @@ function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
                             <FormLabel htmlFor="description">
                                 Description
                             </FormLabel>
-                            <Textarea
+                            {/* <Textarea
                                 id="description"
                                 placeholder="A brief summary of your background and skills."
+                            /> */}
+                            <RichTextEditor
+                                value={description}
+                                setValue={setDescription}
                             />
                         </FormControl>
                     </ModalBody>

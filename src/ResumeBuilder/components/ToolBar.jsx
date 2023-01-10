@@ -85,6 +85,8 @@ const ToolBar = ({
     newResumeMode,
     resumeListRefresh,
 }) => {
+    console.log('newResumeMode', newResumeMode)
+
     const toast = useToast()
     const uploadText = useBreakpointValue(
         { base: '', md: 'Upload File' },

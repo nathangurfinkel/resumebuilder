@@ -79,7 +79,7 @@ const NavBar = () => {
                     // onClick={() => navigate('/')}
                 >
                     <NavLink to="/">
-                        {isLargerThan600 ? 'Nathan Gurfinkel' : 'NG'}
+                        {isLargerThan600 ? 'ResumeBuilder' : 'RB'}
                     </NavLink>
                 </Heading>
                 {/* desktop nav */}
@@ -106,8 +106,8 @@ const NavBar = () => {
                         onClick={() => navigate('/resume-builder')}
                     >
                         {useBreakpointValue({
-                            base: 'RB',
-                            md: 'Resume Builder',
+                            base: 'Builder',
+                            md: 'Builder',
                         })}
                         <Badge
                             ml="1"
