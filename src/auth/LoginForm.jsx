@@ -21,7 +21,7 @@ import {
 } from '@chakra-ui/react'
 import { AuthContext } from './AuthProvider'
 import { useRequest } from 'ahooks'
-import { postSignIn } from '../api'
+import { login } from '../api'
 
 export default function LoginForm({ modal, onClose }) {
     const navigate = useNavigate()
@@ -37,11 +37,9 @@ export default function LoginForm({ modal, onClose }) {
         })
     }
 
-    const { loading, run, data, error } = useRequest(postSignIn, {
+    const { loading, run, data, error } = useRequest(login, {
         manual: true,
         onSuccess: (result, params) => {
-       
-
             handleLogin(
                 result.data.token,
                 result.data.userId,
@@ -61,10 +59,9 @@ export default function LoginForm({ modal, onClose }) {
             })
         },
         onError: (error, params) => {
-         
             toast({
                 title: 'Error',
-                description: JSON.stringify(error.response.statusText),
+                description: JSON.stringify(error.response.data.message),
                 status: 'error',
                 duration: 9000,
                 isClosable: true,

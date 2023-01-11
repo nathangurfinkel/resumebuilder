@@ -29,7 +29,11 @@ const ResumePreview = ({
         templateId,
     },
 }) => {
+    // when size of the window changes, the zoom is resized to fit the window
+
     const [zoom, setZoom] = useState(100)
+    const colorSchemes = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink']
+    const [colorScheme, setColorScheme] = useState('blue')
 
     return (
         // a4 aspect ratio
@@ -37,16 +41,29 @@ const ResumePreview = ({
             <Heading size={'md'} mb={2}>
                 Preview
             </Heading>
+            <Slider
+                aria-label="slider-ex-1"
+                defaultValue={100}
+                onChange={(value) => setZoom(value)}
+                min={50}
+                max={200}
+            >
+                <SliderTrack>
+                    <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+            </Slider>
             <Box
-                maxW="80%"
-                maxH="100%"
-                ratio={210 / 297}
+                // maxW="80%"
+                // maxH="100%"
+                // ratio={210 / 297}
                 __css={{
                     zoom: zoom / 100,
-                    transform: `scale(${zoom / 100})` /* Safari */,
+                    transform: `scale(${zoom / 100})`,
                     transformOrigin: 'top left',
                 }}
                 id="resume-preview"
+                border={'1px solid black'}
             >
                 <Template1
                     //         name: any;
@@ -68,6 +85,7 @@ const ResumePreview = ({
                     experience={experience}
                     education={education}
                     phone={phone}
+                    colorScheme={colorScheme}
                 />
             </Box>
         </Flex>

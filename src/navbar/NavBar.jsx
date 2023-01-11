@@ -43,7 +43,6 @@ const NavBar = () => {
 
     // check if screen is xs
     const [isLargerThan600] = useMediaQuery('(min-width: 600px)')
-    console.log('is logged in: ', isLoggedIn)
 
     const handleColorMode = () => {
         toggleColorMode()

@@ -18,12 +18,10 @@ import Editor from './RichTextEditor'
 import RichTextEditor from './RichTextEditor'
 
 function AddExperienceModal({ workIsOpen, workOnClose, resume, setResume }) {
-    console.log('resume', resume)
 
     const [description, setDescription] = React.useState('')
 
     const onSubmit = (e) => {
-        console.log('onSubmit')
         e.preventDefault()
         const company = e.target.company.value
         const position = e.target.position.value

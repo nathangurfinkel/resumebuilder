@@ -14,93 +14,122 @@ import {
     Button,
     VStack,
     IconButton,
+    HStack,
 } from '@chakra-ui/react'
+import parse from 'html-react-parser'
+import { BsWhatsapp, BsGithub, BsLinkedin } from 'react-icons/bs'
+import ReactQuill from 'react-quill'
+// import chakraUiRichTextParser from '../../helpers/chakraUiRichTextParser'
 
 const Template1 = ({
     name,
     email,
     summary,
     skills,
-    hobbies,
+    activities,
     languages,
     experience,
     education,
+    colorScheme,
+    phone,
 }) => (
-    <Box p={4}>
+    <Box
+        // p={4}
+        __css={{
+            width: '8.27in' /* 210mm */,
+            height: '11.69in' /* 297mm */,
+            margin: '0 auto',
+            background: 'white',
+        }}
+    >
         <Grid templateColumns="25% 75%">
-            <VStack>
-                <Heading fontSize="3xl">{name}</Heading>
-                <Divider />
-                <Flex align="center">
+            <VStack align="start" bg={colorScheme + '.600'} p={4} h="11.69in">
+                <Heading fontSize="3xl" color="white">
+                    {name}
+                </Heading>
+                {/* email */}
+                <Text fontSize="sm" color="white">
+                    <Link href={`mailto:${email}`}>{email}</Link>
+                </Text>
+                {/* phone */}
+                <Text fontSize="sm" color="white">
+                    <Link href={`tel:${phone}`}>{phone}</Link>
+                </Text>
+
+                <Divider w={'30%'} />
+                <HStack spacing={4} align="center" mt={4}>
                     <Link href="whatsapp://send?phone=+1234567890">
                         <IconButton
-                            icon="chat"
+                            icon={<BsWhatsapp />}
                             aria-label="WhatsApp"
-                            variant="outline"
+                            variant="solid"
                             color={'green.500'}
-                            size="lg"
+                            size="md"
+                            bg={'green.100'}
                         />
                     </Link>
                     <Link href="https://github.com/username">
                         <IconButton
-                            icon="github"
+                            icon={<BsGithub />}
                             aria-label="GitHub"
-                            variant="outline"
-                            variantColor="black"
-                            size="lg"
+                            variant="solid"
+                            color={'black'}
+                            size="md"
+                            bg={'gray.100'}
                         />
                     </Link>
                     <Link href="https://linkedin.com/in/username">
                         <IconButton
-                            icon="linkedin"
+                            icon={<BsLinkedin />}
                             aria-label="LinkedIn"
-                            variant="outline"
-                            variantColor="blue"
-                            size="lg"
+                            variant="solid"
+                            color={'blue.500'}
+                            size="md"
+                            bg={'blue.100'}
                         />
                     </Link>
-                </Flex>
-                <Text fontSize="lg" mt={4}>
+                </HStack>
+                <Text fontSize="lg" mt={4} color="white">
                     <Link href="https://example.com">example.com</Link>
                 </Text>
-                <Heading fontSize="2xl" mt={8} mb={4}>
+                <Heading fontSize="2xl" mt={8} mb={4} color="white">
                     Skills
                 </Heading>
                 <List>
                     {skills &&
                         skills.map((skill) => (
-                            <ListItem>
+                            <ListItem color="white">
                                 <Icon name="check" mr={2} />
                                 {skill}
                             </ListItem>
                         ))}
                 </List>
-                <Heading fontSize="2xl" mt={8} mb={4}>
+                <Heading fontSize="2xl" mt={8} mb={4} color="white">
                     Hobbies
                 </Heading>
                 <List>
-                    {hobbies &&
-                        hobbies.map((hobby) => (
-                            <ListItem>
+                    {activities &&
+                        activities.map((activity) => (
+                            <ListItem color="white">
                                 <Icon name="check" mr={2} />
-                                {hobby}
+                                {activity}
                             </ListItem>
                         ))}
                 </List>
-                <Heading fontSize="2xl" mt={8} mb={4}>
+                <Heading fontSize="2xl" mt={8} mb={4} color="white">
                     Languages
                 </Heading>
                 <List>
                     {languages &&
                         languages.map((language) => (
-                            <ListItem>
+                            <ListItem color="white">
                                 <Icon name="check" mr={2} />
                                 {language}
                             </ListItem>
                         ))}
                 </List>
             </VStack>
-            <VStack>
+            <VStack align="start" p={4} style={{ color: 'black' }}>
                 <Heading fontSize="2xl" mb={4}>
                     Summary
                 </Heading>
@@ -110,7 +139,7 @@ const Template1 = ({
                 </Heading>
                 {experience &&
                     experience.map((exp) => (
-                        <Box mb={4}>
+                        <Box m={4} p={4}>
                             {' '}
                             <Box mb={2}>
                                 <Heading as="h3" size="lg">
@@ -120,8 +149,12 @@ const Template1 = ({
                                 <Text fontSize="sm">
                                     {exp.startDate} - {exp.endDate}
                                 </Text>
+                                <ReactQuill
+                                    value={exp.description}
+                                    readOnly
+                                    theme={'bubble'}
+                                />
                             </Box>
-                            <Text fontSize="lg">{exp.description}</Text>
                         </Box>
                     ))}
                 <Heading fontSize="2xl" mt={8} mb={4}>

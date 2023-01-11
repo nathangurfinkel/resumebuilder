@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 
-import { postSignUp } from '../api'
+import { register } from '../api'
 
 import {
     Box,
@@ -34,7 +34,7 @@ const SignUpPage = () => {
         })
     }
 
-    const { loading, run, data, error } = useRequest(postSignUp, {
+    const { loading, run, data, error } = useRequest(register, {
         manual: true,
         onSuccess: (result, params) => {
             
@@ -51,9 +51,7 @@ const SignUpPage = () => {
         
             toast({
                 title: 'Error',
-                description: error.response.data
-                    ? error.response.data
-                    : error.message,
+                description:  error.data.message,
                 status: 'error',
                 duration: 9000,
                 isClosable: true,

@@ -274,6 +274,31 @@ export const ResumeInput = ({ resume, setResume }) => {
             {/* same for skills */}
 
             {/* array of badges of existing activities  and then an input to add new activities */}
+            <FormLabel htmlFor="activities">
+                Activities:{' '}
+                {activities &&
+                    activities.map((activity, i) => (
+                        <>
+                            <Badge
+                                key={i}
+                                colorScheme="teal"
+                                size="sm"
+                                m={1}
+                                _hover={{ cursor: 'pointer', color: 'tomato' }}
+                                onClick={() =>
+                                    setResume({
+                                        ...resume,
+                                        activities: activities.filter(
+                                            (_, j) => j !== i
+                                        ),
+                                    })
+                                }
+                            >
+                                {activity}
+                            </Badge>{' '}
+                        </>
+                    ))}
+            </FormLabel>
             <InputGroup>
                 <Input
                     id="activitiesInput"
@@ -318,7 +343,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                                 document.getElementById(
                                     'activitiesInput'
                                 )?.value
-                            console.log(resume)
 
                             if (newActivity === '') {
                                 toast({
@@ -337,11 +361,9 @@ export const ResumeInput = ({ resume, setResume }) => {
                                     ? [...resume.activities, newActivity]
                                     : [newActivity],
                             })
-                            console.log(newActivity)
                             //clear input
                             document.getElementById('activitiesInput').value =
                                 ''
-                            console.log(resume)
                         }}
                     />
                 </InputRightElement>
@@ -401,10 +423,8 @@ export const ResumeInput = ({ resume, setResume }) => {
                                     ? [...resume.skills, newSkill]
                                     : [newSkill],
                             })
-                            console.log(newSkill)
                             //clear input
                             document.getElementById('skillsInput').value = ''
-                            console.log(resume)
                         }}
                     />
                 </InputRightElement>
@@ -437,7 +457,6 @@ export const ResumeInput = ({ resume, setResume }) => {
                         if (e.key === 'Enter') {
                             const newAward =
                                 document.getElementById('awards')?.value
-                            console.log(resume)
 
                             if (newAward === '') {
                                 toast({

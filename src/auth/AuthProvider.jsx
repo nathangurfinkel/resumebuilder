@@ -47,7 +47,6 @@ const AuthProvider = ({ children }) => {
         }
     }
     useEffect(() => {
-        console.log('useEffect in AuthProvider')
         if (token && expiresAt) {
             if (new Date(parseInt(expiresAt)) > new Date()) {
                 setIsLoggedIn(true)

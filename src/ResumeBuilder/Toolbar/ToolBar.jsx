@@ -1,14 +1,8 @@
 import { useColorModeValue } from '@chakra-ui/color-mode'
-import {
-    AddIcon,
-    ArrowDownIcon,
-    ArrowUpIcon,
-    CheckCircleIcon,
-} from '@chakra-ui/icons'
+import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { useBreakpointValue } from '@chakra-ui/media-query'
 import {
     Button,
-    Center,
     Divider,
     Modal,
     ModalBody,
@@ -17,12 +11,6 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Spacer,
-    Spinner,
-    Stack,
-    IconButton,
-    Text,
-    Box,
     HStack,
     AlertDialog,
     AlertDialogBody,
@@ -39,8 +27,6 @@ import {
     MenuItem,
     Icon,
     MenuDivider,
-    Badge,
-    Heading,
     Alert,
     AlertIcon,
     AlertDescription,
@@ -49,20 +35,12 @@ import {
 import React from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ResumeMenu from './ResumeMenu'
-import RadioIconGroup from './RadioIconGroup'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { handleDownload } from '../../helpers/handleDownload'
-import { CircularProgress } from '@chakra-ui/react'
-import PacmanLoader from 'react-spinners/PacmanLoader'
 import { useRequest } from 'ahooks'
 import { deleteResumeById } from '../../api'
 import { DeleteIcon } from '@chakra-ui/icons'
-import {
-    BsFile,
-    BsFileEarmark,
-    BsFileEarmarkArrowUp,
-    BsFilePdfFill,
-} from 'react-icons/bs'
+import { BsFileEarmark } from 'react-icons/bs'
 import { VscFilePdf, VscJson } from 'react-icons/vsc'
 import { AiOutlineFileWord } from 'react-icons/ai'
 import jsPDF from 'jspdf'
@@ -85,8 +63,6 @@ const ToolBar = ({
     newResumeMode,
     resumeListRefresh,
 }) => {
-    console.log('newResumeMode', newResumeMode)
-
     const toast = useToast()
     const uploadText = useBreakpointValue(
         { base: '', md: 'Upload File' },
@@ -104,7 +80,6 @@ const ToolBar = ({
     const [fileUploadOpen, setFileUploadOpen] = React.useState(false)
     const [file, setFile] = useState(null)
     const handleChange = (file) => {
-        console.log('file', file)
         setFile(file)
         try {
             // read the file data - its a .json file
@@ -114,7 +89,6 @@ const ToolBar = ({
                 const resumeData = JSON.parse(e.target.result)
                 setResume({ ...resume, ...resumeData })
                 // setNewResumeMode(false)
-                console.log('resumeData', resumeData)
                 toast({
                     title: 'Resume ' + resumeData?.identifier + ' uploaded',
                     description: 'Your resume has been uploaded',
@@ -143,10 +117,7 @@ const ToolBar = ({
             },
         })
     }
-    // useEffect(() => {
-    //     console.log('file', file)
 
-    // }, [file])
 
     const {
         data: deleteResumeData,
@@ -155,9 +126,6 @@ const ToolBar = ({
     } = useRequest(deleteResumeById, {
         manual: true,
         onSuccess: (result, params) => {
-            console.log('result', result)
-            console.log('params', params)
-
             toast({
                 title: 'Resume deleted',
                 description: 'Your resume has been deleted',
@@ -169,8 +137,6 @@ const ToolBar = ({
             resumeListRefresh()
         },
         onError: (error, params) => {
-            console.log('error', error)
-            console.log('params', params)
             toast({
                 title: 'Error deleting resume',
                 description: 'There was an error deleting your resume',

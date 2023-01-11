@@ -21,6 +21,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.2.2",
     "framer-motion": "^6.5.1",
+    "html-react-parser": "^3.0.7",
     "jspdf": "^2.5.1",
     "prettier": "^2.8.1",
     "randomcolor": "^0.6.2",
@@ -31,7 +32,9 @@
     "react-icons": "^4.7.1",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.6.1",
-    "react-spinners": "^0.13.7"
+    "react-spinners": "^0.13.7",
+    "slate": "^0.88.1",
+    "slate-react": "^0.88.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

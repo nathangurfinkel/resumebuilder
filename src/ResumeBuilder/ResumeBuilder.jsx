@@ -24,8 +24,8 @@ import { updateResumeById } from '../api'
 import { useNavigate } from 'react-router-dom'
 import LoginForm from '../auth/LoginForm'
 import { AuthContext } from '../auth/AuthProvider'
-import ToolBar from './components/ToolBar'
-import NewResumeForm from './components/NewResume'
+import ToolBar from './Toolbar/ToolBar'
+import NewResumeForm from './Toolbar/NewResume'
 const ResumeBuilder = () => {
     const [fileUploadOpen, setFileUploadOpen] = useState(false)
     const { isLoggedIn, handleLogin, token, userId, expiresAt } =
@@ -73,7 +73,6 @@ const ResumeBuilder = () => {
     } = useRequest(postNewResume, {
         manual: true,
         onSuccess: (result, params) => {
-            console.log('params', params)
             toast({
                 title: 'Resume created',
                 description: 'Your resume has been created',
@@ -82,7 +81,8 @@ const ResumeBuilder = () => {
                 isClosable: true,
             })
             resumeListRefresh()
-            initializeResume(params[0].identifier)
+            console.log('newResume', result)
+            initializeResume(params[0].identifier, result.data._id || '')
         },
         onError: (error, params) => {
             toast({
@@ -109,13 +109,8 @@ const ResumeBuilder = () => {
         refreshDeps: [resume],
         defaultParams: [resume],
 
-        onError: (error, params) => {
-            console.log('error', error)
-            console.log('params', params)
-        },
+        onError: (error, params) => {},
         onSuccess: (result, params) => {
-            console.log('params', params)
-
             resumeListRefresh()
         },
     })
@@ -139,7 +134,7 @@ const ResumeBuilder = () => {
         updateResumeRun(resume)
     }
 
-    const initializeResume = (identifier) => {
+    const initializeResume = (identifier, _id) => {
         setResume({
             identifier: identifier,
             name: '',
@@ -152,6 +147,7 @@ const ResumeBuilder = () => {
             education: [],
             phone: '',
             template: 1,
+            _id: _id,
         })
     }
 

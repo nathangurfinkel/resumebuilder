@@ -77,7 +77,6 @@ const ProfessionalSection = ({ resume, setResume }) => {
                                             : 'md'
                                     }
                                     onClick={() => {
-                                        console.log('clicked')
                                     }}
                                 >
                                     <Stack direction="row">
